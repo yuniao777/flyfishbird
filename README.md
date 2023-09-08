@@ -64,3 +64,5 @@ data.top.user_status_label = '@{offline}' 此时，label会更新为离线
 也就是说，所有的变量都需要通过 setVar 来设置
 
 关于文本处理中有个varGroup，为了分离文本变量中引用的变量。在同一个varGroup中，会优先引用同一个varGroup里的变量，如果没有，才会去全局寻找
+
+7、注册关键字、注册节点属性
