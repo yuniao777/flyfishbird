@@ -79,3 +79,4 @@ data.top.user_status_label = '@{offline}' 此时，label会更新为离线
 
 7、注册关键字、注册节点的默认属性
 
+8、varGroup 添加 @{parent} 特殊符号

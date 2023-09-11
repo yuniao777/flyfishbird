@@ -1,13 +1,13 @@
 
 import ExtBase from "./ExtBase";
-const { ccclass, requireComponent } = cc._decorator;
+const { ccclass, requireComponent, property } = cc._decorator;
 
 @ccclass
 @requireComponent(cc.ScrollView)
 export default class ScrollViewExtBase extends ExtBase {
     paddingBottom = 0;
     paddingTop = 0;
-    spacingY = 0;
+    @property spacingY = 0;
     paddingLeft = 0;
     paddingRight = 0;
     spacingX = 0;

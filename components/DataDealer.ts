@@ -50,13 +50,40 @@ export default class DataDealer extends cc.Component {
     dataParent = null;
     langParent = null;
 
-    varGroup = '';
+    _varGroup = '';
     dispatchPriority = 0;
 
     dataDefines: DataDefine[] = null;
 
+    set varGroup(v) {
+        this._varGroup = v;
+        if (this._varGroup) {
+            let index = this._varGroup.indexOf('@{parent}');
+            if (index >= 0) {
+                let parent = this.findParentsVarGroup(this.node);
+                this._varGroup.replace('@{parent}', parent);
+            }
+        }
+    }
+
+    get varGroup() {
+        return this._varGroup;
+    }
+
 
     valueChangeComponent: (compName: string, value: any) => any = null;
+
+    findParentsVarGroup(node: cc.Node) {
+        let parent = node;
+        if (!parent) {
+            return '';
+        }
+        let dealer = parent.getComponent(DataDealer);
+        if (!dealer || !dealer.varGroup) {
+            return this.findParentsVarGroup(parent);
+        }
+        return dealer.varGroup
+    }
 
     dealData(dataParent: Object, async: boolean, priority: number, taskTag: string, varGroup: string) {
         if (this.dataParent) {
@@ -80,16 +107,16 @@ export default class DataDealer extends cc.Component {
         this.varGroup = varGroup;
         this.langParent = null;
         let comp = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText);
-        comp && ffb.langManager.bindLanguage(comp, this.langParent, '', varGroup);
+        comp && ffb.langManager.bindLanguage(comp, this.langParent, '', this.varGroup);
     }
 
-    unBindLanguage(varGroup: string) {
+    unBindLanguage() {
         let comp = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText);
-        comp && ffb.langManager.unBindLanguage(comp, this.langParent, varGroup);
+        comp && ffb.langManager.unBindLanguage(comp, this.langParent, this.varGroup);
     }
 
     removeAll() {
-        this.unBindLanguage(this.varGroup);
+        this.unBindLanguage();
         this.dealDefineNode(this.dataParent, true);
         if (this.dataDefines) {
             for (let i = 0; i < this.dataDefines.length; ++i) {

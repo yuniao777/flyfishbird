@@ -109,7 +109,7 @@ class LanguageSetter {
         let languageObject: ffb.LanguageObject = null;
         if (this.varGroup) {
             languageObject = ffb.langManager.getVar(this.varGroup);
-            if (!(key in languageObject)) {
+            if (languageObject && !(key in languageObject)) {
                 languageObject = ffb.langManager.getVarParent(key);
             }
         } else {
