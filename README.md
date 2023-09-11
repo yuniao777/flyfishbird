@@ -19,6 +19,18 @@ assets下有scenes、scripts和多个bundle目录
 
 每个bundle下都要创建一个init文件，用来初始化bundle配置
 
+init文件如下
+if (!CC_EDITOR) {
+    cc.game.on(cc.game.EVENT_ENGINE_INITED, () => {
+        cc.assetManager.loadBundle('home', ()=>{
+            ffb.resManager.addBundle(cc.assetManager.getBundle('home'));
+        });
+
+        ffb.langManager.setLanguage(zh_home);
+
+    });
+}
+
 
 4、TableView 的 item 的根节点要添加 TableViewItem 组件
 
