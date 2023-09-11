@@ -19,6 +19,16 @@ export default class LittleGame extends Platform {
     }
 
     loadSubpackage(param: pf.LoadSubpackageParam): pf.LoadSubpackageTask {
+        let p: pf.LoadSubpackageParam = { name: '' };
+        for (const key in param) {
+            p[key] = param[key];
+        }
+        let success = p.success;
+        p.success = function () {
+            cc.assetManager.loadBundle(p.name, () => {
+                success && success();
+            });
+        }
         return platform.loadSubpackage(param);
     }
 

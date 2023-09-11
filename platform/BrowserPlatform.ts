@@ -1,5 +1,15 @@
 import Platform from "./Platform";
 
+type ListenerProgress = (res: { progress: number, totalBytesWritten: number, totalBytesExpectedToWrite: number }) => void;
+
+class Listener {
+    listener: ListenerProgress = null;
+
+    onProgressUpdate(listener: ListenerProgress) {
+        this.listener = listener;
+    }
+}
+
 export default class BrowserPlatform extends Platform {
 
     login(param?: pf.LoginParam): void {
@@ -8,8 +18,12 @@ export default class BrowserPlatform extends Platform {
     }
 
     loadSubpackage(param: pf.LoadSubpackageParam): pf.LoadSubpackageTask {
-        param.success && param.success();
-        param.complete && param.complete();
-        return null;
+        let task = new Listener();
+        cc.assetManager.loadBundle('home', () => {
+            task.listener && task.listener({ progress: 1, totalBytesExpectedToWrite: 1, totalBytesWritten: 1 });
+            param.success && param.success();
+            param.complete && param.complete();
+        });
+        return task;
     }
 }
