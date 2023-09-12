@@ -64,6 +64,7 @@ export default class TableView extends ScrollViewExtBase {
         this.itemY = [];
         for (let i = 0; i < count; ++i) {
             this.itemY.push(totalHeight);
+            // console.log(totalHeight);
             let item = this.items[i];
             totalHeight += item.height ? item.height : this.prefabs[item.idx ?? 0].data.height + this.spacingY;
         }
@@ -203,8 +204,10 @@ export default class TableView extends ScrollViewExtBase {
     getY(i: number, node: cc.Node) {
         let content = this.scrollView.content;
         let paddingTop = this.paddingTop;
-        let height = this.itemY[i + 1] - this.itemY[i] - this.spacingY
-        return (1 - content.anchorY) * content.height - (this.itemY[i] + height / 2 + (0.5 - node.anchorY) * node.height + paddingTop);
+        let height = this.itemY[i + 1] - this.itemY[i] - (i === this.items.length - 1 ? 0 : this.spacingY);
+        let y = (1 - content.anchorY) * content.height - (this.itemY[i] + height / 2 + (0.5 - node.anchorY) * node.height + paddingTop);
+        // console.log(y);
+        return y;
     }
 
     spliceItems<T>(start: number, count: number, items: T[]) {
