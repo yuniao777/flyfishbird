@@ -74,17 +74,17 @@ class ResManager {
         }
         return new Promise((resolve) => {
             let funcName = isPreLoad ? 'preload' : 'load';
-            // if (type) {
-            //     bundle[funcName]<T>(path, type, (err, asset) => {
-            //         err && console.error(`bundle ${bundleName}的 ${filename} 加载出错:`, err);
-            //         resolve(asset);
-            //     });
-            // } else {
-            bundle[funcName]<T>(path, (err, asset) => {
-                err && console.error(`bundle ${bundleName}的 ${filename} 加载出错:`, err);
-                resolve(asset);
-            });
-            // }
+            if (type) {
+                bundle[funcName]<T>(path, type, (err, asset) => {
+                    err && console.error(`bundle ${bundleName}的 ${filename} 加载出错:`, err);
+                    resolve(asset);
+                });
+            } else {
+                bundle[funcName]<T>(path, (err, asset) => {
+                    err && console.error(`bundle ${bundleName}的 ${filename} 加载出错:`, err);
+                    resolve(asset);
+                });
+            }
         });
     }
 

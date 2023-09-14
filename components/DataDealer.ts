@@ -285,7 +285,8 @@ export default class DataDealer extends cc.Component {
                     }
                     let comp = this.getComponent(classObj);
                     if (!comp) {
-                        comp = this.addComponent(classObj);
+                        console.error(`节点${this.node.name}中找不到 ${key} 组件`);
+                        continue;
                     }
                     let compData = data[key];
                     if (typeof compData === 'object') {
@@ -348,7 +349,15 @@ async function setSpriteFrame(comp: cc.Sprite, sf: string) {
         let texture: cc.Texture2D = await ffb.resManager.loadRemoteResource(sf);
         spriteFrame = new cc.SpriteFrame(texture);
     } else {
-        spriteFrame = await ffb.resManager.loadRes(sf, cc.SpriteFrame);
+        let idx = sf.indexOf('/');
+        if (idx >= 0) {
+            let textureName = sf.substring(0, idx);
+            let spriteFrameName = sf.substring(idx + 1);
+            let atlas = await ffb.resManager.loadRes(textureName, cc.SpriteAtlas);
+            spriteFrame = atlas.getSpriteFrame(spriteFrameName);
+        } else {
+            spriteFrame = await ffb.resManager.loadRes(sf, cc.SpriteFrame);
+        }
     }
     if (!cc.isValid(comp)) {
         return;

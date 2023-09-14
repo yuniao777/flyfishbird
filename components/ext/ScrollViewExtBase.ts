@@ -5,6 +5,9 @@ const { ccclass, requireComponent, property } = cc._decorator;
 @ccclass
 @requireComponent(cc.ScrollView)
 export default class ScrollViewExtBase extends ExtBase {
+
+    @property(cc.Prefab) prefabs: cc.Prefab[] = [];
+
     paddingBottom = 0;
     paddingTop = 0;
     @property spacingY = 0;
@@ -20,11 +23,14 @@ export default class ScrollViewExtBase extends ExtBase {
      */
     type = 0;
 
-    _layoutDirty = false;
-    scrollView: cc.ScrollView = null;
+    // _layoutDirty = false;
+    _scrollView: cc.ScrollView = null;
 
-    protected onLoad() {
-        this.scrollView = this.getComponent(cc.ScrollView);
+    get scrollView() {
+        if (!this._scrollView) {
+            this._scrollView = this.getComponent(cc.ScrollView);
+        }
+        return this._scrollView;
     }
 
     onEnable() {
@@ -41,9 +47,9 @@ export default class ScrollViewExtBase extends ExtBase {
     }
 
     updateLayout() {
-        if (!this._layoutDirty) {
-            return;
-        }
+        // if (!this._layoutDirty) {
+        //     return;
+        // }
 
         let scrollView = this.getComponent(cc.ScrollView);
         let content = scrollView.content;
@@ -102,6 +108,6 @@ export default class ScrollViewExtBase extends ExtBase {
             content.height = Math.max(content.parent.height, height);
         }
 
-        this._layoutDirty = false;
+        // this._layoutDirty = false;
     }
 }

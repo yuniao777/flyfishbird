@@ -3,16 +3,12 @@ import TableViewItem from "./TableViewItem";
 
 const { ccclass, requireComponent, property, menu } = cc._decorator;
 
-/**
- * 
- */
 
 @ccclass
 @requireComponent(cc.ScrollView)
 @menu('ffb ui组件/TableView')
 export default class TableView extends ScrollViewExtBase {
 
-    @property(cc.Prefab) prefabs: cc.Prefab[] = [];
     _items = [];     //其中idx表示第几个prefab，不设置，默认为第0个,height表示高度
     async = false;
     itemLength = 0;
@@ -25,7 +21,6 @@ export default class TableView extends ScrollViewExtBase {
 
     set items(v) {
         this._items = v;
-        this.updateVars();
         this.itemChangedNeedUpdate();
     }
 
