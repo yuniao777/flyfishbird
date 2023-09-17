@@ -144,7 +144,7 @@ namespace ffb {
          * @param isPreLoad 是否预加载（注意：当预加载时，返回的就不是cc.Asset类型了）
          */
         loadResource<T extends cc.Asset>(fold: ResFoldNames, filename: string, type?: { prototype: T }, isPreLoad?: boolean): Promise<T>;
-        loadRemoteResource<T extends cc.Asset>(url: string, options?: Record<string, any>): Promise<T>;
+        // loadRemoteResource<T extends cc.Asset>(url: string, options?: Record<string, any>): Promise<T>;
 
         /**
          * 加载audio文件夹内音频文件,
@@ -346,6 +346,7 @@ namespace ffb {
         }
         function getLabelHeight(func: (getHeight: (str: string, size: cc.Size, attribute: Record<string, any>) => number) => void);
         function getRichTextHeight(func: (getHeight: (str: string, size: cc.Size, attribute: Record<string, any>) => number) => void);
+        function randomInt(lower: number, upper: number): number;
     }
 
     export let gameManager: GameManager;

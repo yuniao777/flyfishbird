@@ -88,25 +88,25 @@ class ResManager {
         });
     }
 
-    loadRemoteResource<T extends cc.Asset>(url: string, options?: Record<string, any>): Promise<T> {
-        if (!url) {
-            return Promise.resolve(null);
-        }
+    // loadRemoteResource<T extends cc.Asset>(url: string, options?: Record<string, any>): Promise<T> {
+    //     if (!url) {
+    //         return Promise.resolve(null);
+    //     }
 
-        return new Promise((resolve, reject) => {
-            let onComplete = function (err: Error, asset) {
-                if (err) {
-                    console.error(err);
-                }
-                resolve(asset);
-            }
-            if (options) {
-                cc.assetManager.loadRemote(url, options, onComplete);
-            } else {
-                cc.assetManager.loadRemote(url, onComplete);
-            }
-        });
-    }
+    //     return new Promise((resolve, reject) => {
+    //         let onComplete = function (err: Error, asset) {
+    //             if (err) {
+    //                 console.error(err);
+    //             }
+    //             resolve(asset);
+    //         }
+    //         if (options) {
+    //             cc.assetManager.loadRemote(url, options, onComplete);
+    //         } else {
+    //             cc.assetManager.loadRemote(url, onComplete);
+    //         }
+    //     });
+    // }
 
     loadAudio(audioName: string) {
         return this.loadResource<cc.AudioClip>('audio', audioName);

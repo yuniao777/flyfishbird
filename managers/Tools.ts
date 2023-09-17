@@ -63,5 +63,11 @@ function getRichTextHeight(func: (getHeight: (str: string, size: cc.Size, attrib
     node.destroy();
 }
 
-export default { Counter, getLabelHeight, getRichTextHeight }
+function randomInt(lower: number, upper: number) {
+    lower = Math.ceil(lower);
+    upper = Math.floor(upper);
+    return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+}
+
+export default { Counter, getLabelHeight, getRichTextHeight, randomInt }
 

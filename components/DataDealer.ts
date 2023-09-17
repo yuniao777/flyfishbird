@@ -346,7 +346,7 @@ export default class DataDealer extends cc.Component {
 async function setSpriteFrame(comp: cc.Sprite, sf: string) {
     let spriteFrame: cc.SpriteFrame = null;
     if (ffb.resManager.isNetResources(sf)) {
-        let texture: cc.Texture2D = await ffb.resManager.loadRemoteResource(sf);
+        let texture: cc.Texture2D = await ffb.resManager.loadNetResource(sf);
         spriteFrame = new cc.SpriteFrame(texture);
     } else {
         let idx = sf.indexOf('/');
