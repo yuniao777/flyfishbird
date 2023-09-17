@@ -6,40 +6,54 @@ class DataManager {
 
     nodeTaskTags = {};
 
-    registeAttrs: { [key: string]: { [key: string]: { set: ffb.AttrSetFun } } } = {};
-    registeKeywords: { [key: string]: ffb.KeywordAttr } = {};
+    registAttrs: { [key: string]: { [key: string]: { set: ffb.AttrSetFun } } } = {};
+    registKeywords: { [key: string]: ffb.KeywordAttr } = {};
     events: { [key: string]: { [key: string]: ffb.EventInfo } } = {};
+    langAttrs: { keyword: string, compName: string }[] = [];
 
-    registeAttribute(compName: string, attrName: string, set: ffb.AttrSetFun) {
-        let attributes = this.registeAttrs[compName]
+    registAttribute(compName: string, attrName: string, set: ffb.AttrSetFun) {
+        let attributes = this.registAttrs[compName]
         if (!attributes) {
-            attributes = this.registeAttrs[compName] = {};
+            attributes = this.registAttrs[compName] = {};
         }
         attributes[attrName] = { set: set };
     }
 
     getAttribute(compName: string, attrName: string,) {
-        return this.registeAttrs?.[compName]?.[attrName];
-        // return this.registeAttrs[compName];
+        return this.registAttrs?.[compName]?.[attrName];
+        // return this.registAttrs[compName];
     }
 
-    registeKeyword(keyword: string, compName: string, key: string) {
-        this.registeKeywords[keyword] = { compName, key };
+    registKeyword(keyword: string, compName: string, key: string) {
+        this.registKeywords[keyword] = { compName, key };
     }
 
-    registeKeywordNode(keyword: string, nodeSet: ffb.NodeSetFun) {
-        this.registeKeywords[keyword] = { nodeSet };
+    registKeywordNode(keyword: string, nodeSet: ffb.NodeSetFun) {
+        this.registKeywords[keyword] = { nodeSet };
     }
 
-    registeKeywordPromise(keyword: string, compName: string, set: ffb.AttrSetFun) {
-        this.registeKeywords[keyword] = { compName, set }
+    registKeywordPromise(keyword: string, compName: string, set: ffb.AttrSetFun) {
+        this.registKeywords[keyword] = { compName, set }
     }
 
     getKeywordAttribute(key: string) {
-        return this.registeKeywords[key];
+        return this.registKeywords[key];
     }
 
-    registeEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean) {
+    registLabelLike(keyword: string, compName: string) {
+        let attr = this.langAttrs.find((info) => info.key === keyword);
+        if (attr) {
+            cc.error('请不要重复注册 ' + keyword);
+            return;
+        }
+        this.langAttrs.push({ keyword, compName });
+    }
+
+    getLabelLikes() {
+        return this.langAttrs;
+    }
+
+    registEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean) {
         let nodeNameEvents = this.events[nodeName];
         if (!nodeNameEvents) {
             nodeNameEvents = this.events[nodeName] = {};

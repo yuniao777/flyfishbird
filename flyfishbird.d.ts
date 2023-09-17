@@ -81,7 +81,7 @@ namespace ffb {
          * @param attrName 属性名
          * @param set 方法
          */
-        registeAttribute(compName: string, attrName: string, set: AttrSetFun);
+        registAttribute(compName: string, attrName: string, set: AttrSetFun);
         getAttribute(compName: string, attrName: string): { set: AttrSetFun };
 
         /**
@@ -90,15 +90,21 @@ namespace ffb {
          * @param compName 节点名关键字涉及的组件
          * @param attributeName 节点名关键字涉及组件上的属性名
          */
-        registeKeyword(keyword: string, compName: string, attributeName: string);
-        registeKeywordPromise(keyword: string, compName: string, set: ffb.AttrSetFun);
-        registeKeywordNode(keyword: string, set: NodeSetFun);
+        registKeyword(keyword: string, compName: string, attributeName: string);
+        registKeywordPromise(keyword: string, compName: string, set: ffb.AttrSetFun);
+        registKeywordNode(keyword: string, set: NodeSetFun);
         getKeywordAttribute(key: string): KeywordAttr;
+
+        /**
+         * 注册类似Label一样动态修改string属性的组件的关键字。也就是说，注册的这个组件，需要有string属性。
+         */
+        registLabelLike(keyword: string, compName: string);
+        getLabelLikes(): { keyword: string, compName: string }[];
 
         /**
          * 
          */
-        registeEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean)
+        registEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean)
         getEvents(nodeName: string): { [key: string]: EventInfo };
 
         /**

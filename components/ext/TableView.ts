@@ -247,7 +247,7 @@ export default class TableView extends ScrollViewExtBase {
 
 // if (!CC_EDITOR) {
 //     cc.game.on(cc.game.EVENT_GAME_INITED, () => {
-//         ffb.dataManager.registeAttribute('TableView', 'items', (comp: TableView, value: []) => {
+//         ffb.dataManager.registAttribute('TableView', 'items', (comp: TableView, value: []) => {
 //             return comp.itemChangedNeedUpdate(true);
 //         });
 //     });

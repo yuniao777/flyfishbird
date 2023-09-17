@@ -106,13 +106,24 @@ export default class DataDealer extends cc.Component {
     bindLanguage(varGroup: string) {
         this.varGroup = varGroup;
         this.langParent = null;
-        let comp = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText);
+        let comp = this.getLabelLikeComp();
         comp && ffb.langManager.bindLanguage(comp, this.langParent, '', this.varGroup);
     }
 
     unBindLanguage() {
-        let comp = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText);
+        let comp = this.getLabelLikeComp();
         comp && ffb.langManager.unBindLanguage(comp, this.langParent, this.varGroup);
+    }
+
+    getLabelLikeComp() {
+        let labelLikes = ffb.dataManager.getLabelLikes();
+        for (let i = 0; i < labelLikes.length; ++i) {
+            let comp = this.node.getComponent(labelLikes[i].compName);
+            if (comp) {
+                return comp;
+            }
+        }
+        return null;
     }
 
     removeAll() {
@@ -217,12 +228,18 @@ export default class DataDealer extends cc.Component {
 
             let find = false;
             let keys = this.node.name.split('_');
-            if ((keys.indexOf('label') >= 0 || keys.indexOf('richtext') >= 0) && dataType === 'string') {
-                let comp = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText);
-                this.langParent = dataParent;
-                ffb.langManager.bindLanguage(comp, this.langParent, '', this.varGroup);
-                find = true;
-            } else {
+            let labelLikes = ffb.dataManager.getLabelLikes();
+            if (dataType === 'string') {
+                let findLabelLike = labelLikes.find((info) => keys.indexOf(info.keyword) >= 0);
+                if (findLabelLike) {
+                    find = true;
+                    let comp = this.node.getComponent(findLabelLike.compName);
+                    this.langParent = dataParent;
+                    ffb.langManager.bindLanguage(comp, this.langParent, '', this.varGroup);
+                }
+            }
+
+            if (!find) {
                 for (let i = 0; i < keys.length; ++i) {
                     let KeywordAttr = ffb.dataManager.getKeywordAttribute(keys[i]);
                     if (KeywordAttr) {
@@ -231,22 +248,30 @@ export default class DataDealer extends cc.Component {
                         if (key) {
                             let compName = KeywordAttr.compName;
                             let comp = this.node.getComponent(compName);
-                            let props: DefineProperties = {};
-                            props[this.node.name] = createDefineSetget({ data: { object: comp, key: key } });
-                            dataDefines.push({ data: dataParent, compName: compName, props: props });
+                            if (comp) {
+                                let props: DefineProperties = {};
+                                props[this.node.name] = createDefineSetget({ data: { object: comp, key: key } });
+                                dataDefines.push({ data: dataParent, compName: compName, props: props });
+                            } else {
+                                cc.warn(`${this.node.name} 节点缺少 ${compName} 组件`);
+                            }
                         } else if (KeywordAttr.set) {
                             let compName = KeywordAttr.compName;
                             let comp = this.node.getComponent(compName);
-                            let props: DefineProperties = {};
-                            props[this.node.name] = createDefineSetget({
-                                set: (v) => {
-                                    counter.addCount();
-                                    KeywordAttr.set(comp, v).then(() => {
-                                        counter.complelteOnce();
-                                    });
-                                }
-                            });
-                            dataDefines.push({ data: dataParent, compName: compName, props: props });
+                            if (comp) {
+                                let props: DefineProperties = {};
+                                props[this.node.name] = createDefineSetget({
+                                    set: (v) => {
+                                        counter.addCount();
+                                        KeywordAttr.set(comp, v).then(() => {
+                                            counter.complelteOnce();
+                                        });
+                                    }
+                                });
+                                dataDefines.push({ data: dataParent, compName: compName, props: props });
+                            } else {
+                                cc.warn(`${this.node.name} 节点缺少 ${compName} 组件`);
+                            }
                         } else if (KeywordAttr.nodeSet) {
                             let props: DefineProperties = {};
                             props[this.node.name] = createDefineSetget({
@@ -293,12 +318,12 @@ export default class DataDealer extends cc.Component {
                         let props: DefineProperties = {};
                         for (const name in compData) {
                             if (name in comp) {
-                                let registeAttribute = ffb.dataManager.getAttribute(key, name);
-                                if (registeAttribute) {
+                                let registAttribute = ffb.dataManager.getAttribute(key, name);
+                                if (registAttribute) {
                                     props[name] = createDefineSetget({
                                         set: (v: string) => {
                                             counter.addCount();
-                                            registeAttribute.set(comp, v).then(() => {
+                                            registAttribute.set(comp, v).then(() => {
                                                 counter.complelteOnce();
                                                 this.valueChangeComponent && this.valueChangeComponent(name, v);
                                             });
@@ -308,9 +333,9 @@ export default class DataDealer extends cc.Component {
                                         }
                                     });
                                 } else {
-                                    if ((classObj === cc.Label || classObj === cc.RichText) && name === 'string') {
+                                    if (name === 'string' && labelLikes.find((info) => cc.js.getClassName(info.compName) === classObj)) {
                                         this.langParent = compData;
-                                        ffb.langManager.bindLanguage(comp as cc.Label, this.langParent, name, this.varGroup);
+                                        ffb.langManager.bindLanguage(comp as ffb.LabelLike, this.langParent, name, this.varGroup);
                                     } else {
                                         props[name] = createDefineSetget({ data: { object: comp, key: name } });
                                     }
@@ -375,15 +400,20 @@ async function setSkeletonData(comp: sp.Skeleton, sd: string) {
 
 if (!CC_EDITOR) {
     cc.game.on(cc.game.EVENT_GAME_INITED, () => {
-        ffb.dataManager.registeAttribute('cc.Sprite', 'spriteFrame', setSpriteFrame);
-        ffb.dataManager.registeAttribute('sp.Skeleton', 'skeletonData', setSkeletonData);
+        ffb.dataManager.registAttribute('cc.Sprite', 'spriteFrame', setSpriteFrame);
+        ffb.dataManager.registAttribute('sp.Skeleton', 'skeletonData', setSkeletonData);
 
-        ffb.dataManager.registeKeywordPromise('sprite', 'cc.Sprite', setSpriteFrame);
-        ffb.dataManager.registeKeywordPromise('skeleton', 'sp.Skeleton', setSkeletonData);
+        ffb.dataManager.registKeywordPromise('sprite', 'cc.Sprite', setSpriteFrame);
+        ffb.dataManager.registKeywordPromise('skeleton', 'sp.Skeleton', setSkeletonData);
 
-        ffb.dataManager.registeKeyword('progressBar', 'cc.ProgressBar', 'progress');
-        ffb.dataManager.registeKeyword('button', 'cc.Button', 'interactable');
-        ffb.dataManager.registeKeyword('toggle', 'cc.Toggle', 'isChecked');
-        ffb.dataManager.registeKeyword('slider', 'cc.Slider', 'progress');
+        ffb.dataManager.registKeyword('progressBar', 'cc.ProgressBar', 'progress');
+        ffb.dataManager.registKeyword('button', 'cc.Button', 'interactable');
+        ffb.dataManager.registKeyword('toggle', 'cc.Toggle', 'isChecked');
+        ffb.dataManager.registKeyword('slider', 'cc.Slider', 'progress');
+
+        ffb.dataManager.registLabelLike('label', 'cc.Label');
+        ffb.dataManager.registLabelLike('rich', 'cc.RichText');
     });
 }
+
+export { setSpriteFrame }
