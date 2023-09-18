@@ -39,7 +39,7 @@ namespace ffb {
         popLayer(nameOrIndex?: string | number);
 
         /**
-         * 移除所有layer栈里面的内容
+         * 移除并销毁RootLayer之外的所有layer
          */
         clearAllPopLayer();
 
@@ -56,6 +56,18 @@ namespace ffb {
          * @param node 要销毁的节点
          */
         destroyNode(node: cc.Node);
+
+        /**
+         * 加载场景
+         * @param sceneName 
+         * @param onLaunched 
+         */
+        loadScene(sceneName: string, onLaunched: (err: string, scene: cc.SceneAsset) => void): boolean
+
+        /**
+         * 销毁所有layer
+         */
+        destroyAllLayer();
     }
 
     type AttrSetFun = (comp: cc.Component, value) => Promise<unknown>;
@@ -102,7 +114,7 @@ namespace ffb {
         getLabelLikes(): { keyword: string, compName: string }[];
 
         /**
-         * 
+         * 注册事件
          */
         registEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean)
         getEvents(nodeName: string): { [key: string]: EventInfo };

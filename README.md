@@ -1,82 +1,60 @@
 # ffb
 cocos creator framework
 
-这个一个数据驱动型框架。目前仅适于于creator2.x版本。
+这是一个基于cocos creator 2.4.11 的双向绑定的mvvm框架。
 
-本框架将ui和数据分离，使用数据控制ui及自定义组件属性，让组件功能化。
+主打轻量、小巧、易用、灵活性高。
 
-1、目录设计
+使用指南：
 
-assets下有scenes、scripts和多个bundle目录
+ 一、基础部分
+1. 推荐项目目录组成：
+- bundle： creator的bundle文件夹，支持多个bundle 
+- scripts： 基础代码文件夹，可用来存放本框架等必须代码
+- scenes： 存放场景文件的目录
 
-- resources： creator的默认bundle
-    - scripts： 此bundle下的代码文件夹
+2. bundle文件夹下的子目录组成
+- audio 存放音频文件，可通过 ffb.resManager.loadAudio获取
+- prefab 存放预制文件，如：主页、各种弹窗页面等预制
+- res 存放资源文件
+以上三个目录为**必须目录**，其他目录可自由创建
 
-- bundle1： 自定义的bundle，与resources目录结构一样
+3. bundle处理
+每个bundle文件夹下都必须要添加一个init文件，其内容如下：
+>     if (!CC_EDITOR) {
+> 
+>         cc.game.on(cc.game.EVENT_ENGINE_INITED, () => {
+> 
+>             //解析bundle里面保存的资源信息
+> 
+>             cc.assetManager.loadBundle('home', (bundle, err)=>{
+> 
+>                 ffb.resManager.addBundle(bundle);
+> 
+>             });
+> 
+>             //多语言相关
+> 
+>             ffb.langManager.setLanguage(zh_home);
+> 
+>         });
+> 
+>     }
 
-- scripts： 基础代码文件夹
-- scenes： 场景目录
+二、使用
 
-每个bundle下都要创建一个init文件，用来初始化bundle配置
+1. GameManager
+GameManager控制着游戏页面的显示，场景的加载。详细的内容看 https://github.com/yuniao777/flyfishbird/blob/main/flyfishbird.d.ts
 
-init文件如下
-if (!CC_EDITOR) {
-    cc.game.on(cc.game.EVENT_ENGINE_INITED, () => {
-        cc.assetManager.loadBundle('home', ()=>{
-            ffb.resManager.addBundle(cc.assetManager.getBundle('home'));
-        });
+2. 数据绑定
+数据根据节点名来绑定，指定绑定的组件，以及组件上的某个属性。
 
-        ffb.langManager.setLanguage(zh_home);
+3. 事件注册
 
-    });
-}
+4. 多语言
 
+三、进阶用法
+1. 节点名关键字
+2. varGroup
 
-4、TableView 的 item 的根节点要添加 TableViewItem 组件
-
-5、如果数组内的元素没有绑定数据，这时修改数组内的元素或者增删元素不会自动刷新，需要自己给自己赋值一次才能刷新
-
-6、文本（方便本地化）
-
-文本内容：文本里面需要本地化的内容，例如
-let lang = {
-    static:{
-        pet_title:'宠物界面',
-    }
-}
-此时，名为 pet_title 的节点上的Label会自动变为 宠物界面
-以上为静态文本，通过 ffb.langManager.setLanguage(lang.static) 来设置
-
-文本变量：比如需要显示金币数量
-let lang = {
-    static:{
-        coin_label:'金币@{user_coin}',
-    }
-}
-以上为静态文本，通过 ffb.langManager.setLanguage(lang.static) 来设置
-其中，user_coin就是变量，需要通过 ffb.langManager.setVar('UserInfo', {user_coin:100}) 来绑定，当 user_coin 数据改变时，label 会自动更新
-
-有时候，我们需要用一个label显示不同的状态，此时，需要在 data 文件中绑定
-let data = {
-    top:{
-        user_status_label:'@{online}',
-    }
-}
-然后再本地化文件的中添加
-let lang = {
-    var:{
-        online:'在线',
-        offline:'离线',
-    }
-}
-以上为需要通过 ffb.langManager.setVar(lang.var) 来设置 user_status_label 引用的变量
-
-data.top.user_status_label = '@{offline}' 此时，label会更新为离线
-
-也就是说，所有的变量都需要通过 setVar 来设置
-
-关于文本处理中有个varGroup，为了分离文本变量中引用的变量。在同一个varGroup中，会优先引用同一个varGroup里的变量，如果没有，才会去全局寻找
-
-7、注册关键字、注册节点的默认属性
-
-8、varGroup 添加 @{parent} 特殊符号
+四、自带工具组件

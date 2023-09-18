@@ -1,2 +1,4 @@
 
 1、将setter和getter改为proxy
+2、弱网状态下的解决方案
+

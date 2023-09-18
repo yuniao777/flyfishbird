@@ -23,6 +23,7 @@ class GameManager {
     private layers: cc.Node[] = [];
 
     private layerLoading: LayerLoading = {};
+    private loadingScene = '';
 
     init() {
         this.initUpdate();
@@ -204,8 +205,45 @@ class GameManager {
 
     clearAllPopLayer() {
         let len = this.layers.length;
+        for (let i = 1; i < len; ++i) {
+            this.destroyNode(this.layers[i]);
+        }
+    }
+
+    destroyAllLayer() {
+        let len = this.layers.length;
         for (let i = 0; i < len; ++i) {
             this.destroyNode(this.layers[i]);
+        }
+    }
+
+    loadScene(sceneName: string, onLaunched: (err: string, scene: cc.SceneAsset) => void): boolean {
+        if (this.loadingScene) {
+            cc.warn(`loadScene: Failed to load scene ${sceneName} because ${this.loadingScene} is already being loaded.`);
+            return false;
+        }
+        var bundle = cc.assetManager.bundles.find((bundle) => {
+            return !!bundle.getSceneInfo(sceneName);
+        });
+        if (bundle) {
+            cc.director.emit(cc.Director.EVENT_BEFORE_SCENE_LOADING, sceneName);
+            this.loadingScene = sceneName;
+            console.time('LoadScene ' + sceneName);
+            bundle.loadScene(sceneName, (err, scene) => {
+                console.timeEnd('LoadScene ' + sceneName);
+                this.loadingScene = '';
+                if (err) {
+                    onLaunched && onLaunched('Failed to load scene: ' + err, null);
+                } else {
+                    this.destroyAllLayer();
+                    cc.director.runSceneImmediate(scene, null, onLaunched);
+                }
+            });
+            return true;
+        } else {
+            cc.error(`loadScene: Can not load the scene ${sceneName} because it was not in the build settings before playing.`);
+            return false;
+
         }
     }
 

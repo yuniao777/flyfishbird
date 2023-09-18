@@ -41,7 +41,7 @@ class DataManager {
     }
 
     registLabelLike(keyword: string, compName: string) {
-        let attr = this.langAttrs.find((info) => info.key === keyword);
+        let attr = this.langAttrs.find((info) => info.keyword === keyword);
         if (attr) {
             cc.error('请不要重复注册 ' + keyword);
             return;
