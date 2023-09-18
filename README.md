@@ -46,12 +46,16 @@ cocos creator framework
 1. 数据绑定
 - 数据根据节点名来绑定，并支持一个数据绑定多个节点。
 >     const HomeUIData = {
->         //Home预制中一个名为user_name的节点(可以是任意层级的子节点)
->         user_name:{                                     
->             cc_Label:{                                  
+>         // Home 预制中一个名为 user_name 的节点(可以是任意层级的子节点)
+>         user_name:{           
+>             // user_name 节点下的组件名。这里可以是引擎组件，也可以是自定义组件                          
+>             cc_Label:{
+>                 //组件中的 string 属性
 >                 string:'ffb',                           
 >             }
->             node:NullNode,                              
+>             //节点本身
+>             node:NullNode,        
+>             //节点上绑定的组件                      
 >             components:{
 >                 cc_Label:NullLabel,                     
 >             },
@@ -69,13 +73,13 @@ cocos creator framework
 >         HomeUIData.user_name.string = 'flyfishbird';
 >     }, 3000);
 
-- 上面那种写法中间有太多层，这时候，我们可以通过关键字来设定默认属性。如果想控制多个属性还是要用上面那种写法。
+- 上面那种写法中间有太多层，这时候，我们可以通过关键字（区分大小写）来设定默认属性。如果想控制多个属性还是要用上面那种写法。
 
 > const HomeUIData = {
 >     user_name_label:'ffb'                                 
 > }
 
-- 这种写法就简洁很多。因为有label关键字（关键字用下划线隔开），可以直接绑定到label的string属性上。
+- 这种写法就简洁很多。因为有label关键字（关键字需要用下划线隔开），可以直接绑定到label的string属性上。
 - 我们也可以通过ffb.dataManager.registKeyword来自己定义默认属性。具体用法可以参考 DataDealer.ts 文件末尾的定义方式
 
 2. 事件注册
@@ -104,10 +108,11 @@ cocos creator framework
 > 
 > ffb.langManager.setLanguage(LanguageData_zh);
 > 
-> //
 > const UserData = {
->     user_name:'@{sam}',      //定义游戏中的角色使用哪个人名   @{}可引用其他变量
->     user_attack:0,           //定义角色的攻击力          
+>     //定义游戏中的角色使用哪个人名   @{}可引用其他通过setLanguage或者setVar设置的变量
+>     user_name:'@{sam}',     
+>     //定义角色的攻击力           
+>     user_attack:0,           
 > };
 > 
 > ffb.langManager.setVar('UserData', UserData);
@@ -143,6 +148,5 @@ cocos creator framework
 2. 类Label的string属性都可使用语言变量。
 - 使用 ffb.dataManager.registLabelLike 来注册。具体用法可以参考 DataDealer.ts 文件末尾的定义方式
 
-四、自带工具组件
-1. TableView:
-- 配合TableViewItemEventTag(添加到每个子项预制的跟节点)使用
+四、自带工具组件、内置关键字
+1. 内置关键字 sprite skeleton progressBar button toggle slider label richtext VarSprite(需要添加 varsprite 组件)

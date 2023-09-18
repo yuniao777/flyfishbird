@@ -412,7 +412,7 @@ if (!CC_EDITOR) {
         ffb.dataManager.registKeyword('slider', 'cc.Slider', 'progress');
 
         ffb.dataManager.registLabelLike('label', 'cc.Label');
-        ffb.dataManager.registLabelLike('rich', 'cc.RichText');
+        ffb.dataManager.registLabelLike('richtext', 'cc.RichText');
     });
 }
 
