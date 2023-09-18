@@ -21,25 +21,27 @@ cocos creator framework
 
 3. bundle处理
 每个bundle文件夹下都必须要添加一个init文件，其内容如下：
->     if (!CC_EDITOR) {
-> 
->         cc.game.on(cc.game.EVENT_ENGINE_INITED, () => {
-> 
->             //解析bundle里面保存的资源信息
-> 
->             cc.assetManager.loadBundle('home', (bundle, err)=>{
-> 
->                 ffb.resManager.addBundle(bundle);
-> 
->             });
-> 
->             //多语言相关
-> 
->             ffb.langManager.setLanguage(zh_home);
-> 
->         });
-> 
->     }
+  ```
+     if (!CC_EDITOR) {
+ 
+         cc.game.on(cc.game.EVENT_ENGINE_INITED, () => {
+ 
+             //解析bundle里面保存的资源信息
+ 
+             cc.assetManager.loadBundle('home', (bundle, err)=>{
+ 
+                 ffb.resManager.addBundle(bundle);
+ 
+             });
+ 
+             //多语言相关
+ 
+             ffb.langManager.setLanguage(zh_home);
+ 
+         });
+ 
+     }
+  ```
 
 二、使用
 
@@ -75,9 +77,7 @@ cocos creator framework
 
 - 上面那种写法中间有太多层，这时候，我们可以通过关键字（区分大小写）来设定默认属性。如果想控制多个属性还是要用上面那种写法。
 
-> const HomeUIData = {
->     user_name_label:'ffb'                                 
-> }
+> const HomeUIData = { user_name_label:'ffb' }
 
 - 这种写法就简洁很多。因为有label关键字（关键字需要用下划线隔开），可以直接绑定到label的string属性上。
 - 我们也可以通过ffb.dataManager.registKeyword来自己定义默认属性。具体用法可以参考 DataDealer.ts 文件末尾的定义方式
