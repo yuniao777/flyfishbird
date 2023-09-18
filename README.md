@@ -44,10 +44,10 @@ cocos creator framework
 二、使用
 
 1. GameManager
-GameManager控制着游戏页面的显示，场景的加载。详细的内容看 https://github.com/yuniao777/flyfishbird/blob/main/flyfishbird.d.ts
+- GameManager控制着游戏页面的显示，场景的加载。详细的内容看 https://github.com/yuniao777/flyfishbird/blob/main/flyfishbird.d.ts
 
 2. 数据绑定
-数据根据节点名来绑定，指定绑定的组件，以及组件上的某个属性。
+- 数据根据节点名来绑定，指定绑定的组件，以及组件上的某个属性。
 
 3. 事件注册
 
