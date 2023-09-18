@@ -62,7 +62,7 @@ namespace ffb {
          * @param sceneName 
          * @param onLaunched 
          */
-        loadScene(sceneName: string, onLaunched: (err: string, scene: cc.SceneAsset) => void): boolean
+        loadScene(sceneName: string, onLaunched?: (err: string, scene: cc.SceneAsset) => void): boolean
 
         /**
          * 销毁所有layer

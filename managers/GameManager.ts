@@ -215,6 +215,7 @@ class GameManager {
         for (let i = 0; i < len; ++i) {
             this.destroyNode(this.layers[i]);
         }
+        this.layers.length = 0;
     }
 
     loadScene(sceneName: string, onLaunched: (err: string, scene: cc.SceneAsset) => void): boolean {
