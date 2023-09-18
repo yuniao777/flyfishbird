@@ -74,20 +74,22 @@ cocos creator framework
     //三秒钟后，屏幕上的 ffb 变成了 flyfishbird
     setTimeout(()=>{
         HomeUIData.user_name.string = 'flyfishbird';
-    }, 3000);- 上面那种写法中间有太多层，这时候，我们可以通过关键字（区分大小写）来设定默认属性。如果想控制多个属性还是要用上面那种写法。
+    }, 3000);
   ```
+
+  - 上面那种写法中间有太多层，这时候，我们可以通过关键字（区分大小写）来设定默认属性。如果想控制多个属性还是要用上面那种写法。
+
   ```
     const HomeUIData = { user_name_label:'ffb' }
   ```
 
-- 这种写法就简洁很多。因为有label关键字（关键字需要用下划线隔开），可以直接绑定到label的string属性上。
+- 这种写法就简洁很多。因为有label关键字（关键字需要在节点名中用下划线隔开），可以直接绑定到label的string属性上。
 - 我们也可以通过ffb.dataManager.registKeyword来自己定义默认属性。具体用法可以参考 DataDealer.ts 文件末尾的定义方式
 
 2. 事件注册
-- 通过 ffb.dataManager.registeEvent 来注册事件
+- 通过 ffb.dataManager.registeEvent 来注册事件，只要是node.emit发送的事件，都可以注册（按钮被点击时发送的是click事件）
   ```
-    //给 pop_layer_btn 按钮注册一个点击事件，只要是node.emit发送的事件，都可以注册（按钮被点击时发送的是click事件）
-    //所有名为 pop_layer_btn 的按钮都会触发这个事件，想不触发，可以修改节点名
+    //所有名为 pop_layer_btn 的按钮都会触发这个事件
     ffb.dataManager.registeEvent('pop_layer_btn', 'click', function(arg1, arg2){
         //如果pop_layer_btn上添加了 NodeEventTag 组件，arg就是 NodeEventTag 附带的tag，后面的其他参数就是事件附带的参数。
         ffb.gameManager.popLayer();
@@ -153,8 +155,8 @@ cocos creator framework
 三、进阶用法
 1. varGroup 为了限定string变量引用的有效范围。
 - 有时候，我们一个item预制会多次使用，这时，就需要用varGroup去区分不同的引用变量。
-2. 类Label的string属性都可使用语言变量。
-- 使用 ffb.dataManager.registLabelLike 来注册。具体用法可以参考 DataDealer.ts 文件末尾的定义方式
+2. 带有string属性的组件都可通过 ffb.dataManager.registLabelLike 注册后使用语言变量。
+- 具体用法可以参考 VarSprite.ts 文件末尾的定义方式
 
 四、自带工具组件、内置关键字
 1. 内置关键字 sprite skeleton progressBar button toggle slider label richtext VarSprite(需要添加 varsprite 组件)
