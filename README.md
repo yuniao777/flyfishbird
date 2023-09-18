@@ -160,3 +160,5 @@ cocos creator framework
 
 四、自带工具组件、内置关键字
 1. 内置关键字 sprite skeleton progressBar button toggle slider label richtext VarSprite(需要添加 varsprite 组件)
+
+结尾：希望大家多多支持，一起来使用、维护此框架，qq群：600635149
