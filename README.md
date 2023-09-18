@@ -45,28 +45,28 @@ cocos creator framework
 
 1. 数据绑定
 - 数据根据节点名来绑定，并支持一个数据绑定多个节点。
->   const HomeUIData = {
->       user_name:{                                     //Home预制中一个名为user_name的节点(可以是任意层级的子节点)
->           cc_Label:{                                  //user_name节点下的组件名。这里可以是引擎组件，也可以是自定义组件
->               string:'ffb',                           //组件中的 string 属性
->           }
->           node:NullNode,                              //节点本身
->           components:{
->               cc_Label:NullLabel,                     //节点上绑定的组件
->           },
->       },
->   }
->   type NullNode:cc.Node = null; type NullLabe:cc.Label = null; 
->   // 上面是个小技巧，定义NullNode、NullLabel等空类型，在ts里面就会有对应类型了。如果直接写null，就会是null类型，而不是cc.Node、cc.Label类型了。   
->   
->   
->   //通过ffb.gameManager（或者ffb.dataManager）建立绑定关系
->   ffb.gameManager.setRootLayer('Home', HomeUIData); //Home 为主页预制
->   
->   //三秒钟后，屏幕上的 ffb 变成了 flyfishbird
->   setTimeout(()=>{
->       HomeUIData.user_name.string = 'flyfishbird';
->   }, 3000);
+>     const HomeUIData = {
+>         user_name:{                                     //Home预制中一个名为user_name的节点(可以是任意层级的子节点)
+>             cc_Label:{                                  //user_name节点下的组件名。这里可以是引擎组件，也可以是自定义组件
+>                 string:'ffb',                           //组件中的 string 属性
+>             }
+>             node:NullNode,                              //节点本身
+>             components:{
+>                 cc_Label:NullLabel,                     //节点上绑定的组件
+>             },
+>         },
+>     }
+>     type NullNode:cc.Node = null; type NullLabe:cc.Label = null; 
+>     // 上面是个小技巧，定义NullNode、NullLabel等空类型，在ts里面就会有对应类型了。如果直接写null，就会是null类型，而不是cc.Node、cc.Label类型了。   
+>     
+>     
+>     //通过ffb.gameManager（或者ffb.dataManager）建立绑定关系
+>     ffb.gameManager.setRootLayer('Home', HomeUIData); //Home 为主页预制
+>     
+>     //三秒钟后，屏幕上的 ffb 变成了 flyfishbird
+>     setTimeout(()=>{
+>         HomeUIData.user_name.string = 'flyfishbird';
+>     }, 3000);
 
 - 上面那种写法中间有太多层，这时候，我们可以通过关键字来设定默认属性。如果想控制多个属性还是要用上面那种写法。
 
