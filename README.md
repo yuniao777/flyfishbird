@@ -46,13 +46,14 @@ cocos creator framework
 1. 数据绑定
 - 数据根据节点名来绑定，并支持一个数据绑定多个节点。
 >     const HomeUIData = {
->         user_name:{                                     //Home预制中一个名为user_name的节点(可以是任意层级的子节点)
->             cc_Label:{                                  //user_name节点下的组件名。这里可以是引擎组件，也可以是自定义组件
->                 string:'ffb',                           //组件中的 string 属性
+>         //Home预制中一个名为user_name的节点(可以是任意层级的子节点)
+>         user_name:{                                     
+>             cc_Label:{                                  
+>                 string:'ffb',                           
 >             }
->             node:NullNode,                              //节点本身
+>             node:NullNode,                              
 >             components:{
->                 cc_Label:NullLabel,                     //节点上绑定的组件
+>                 cc_Label:NullLabel,                     
 >             },
 >         },
 >     }
