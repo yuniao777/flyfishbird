@@ -101,6 +101,7 @@ namespace ffb {
          * @param keyword 节点名关键字
          * @param compName 节点名关键字涉及的组件
          * @param attributeName 节点名关键字涉及组件上的属性名
+         * @param set 仅在有同步操作，需要等待操作完成（比如加载资源）的时候才需要返回一个Promise对象。如果是异步，请使用 registKeyword
          */
         registKeyword(keyword: string, compName: string, attributeName: string);
         registKeywordPromise(keyword: string, compName: string, set: ffb.AttrSetFun);
@@ -131,8 +132,8 @@ namespace ffb {
         resetDataListen(node: cc.Node);
     }
 
-    //clips（动画文件）、res（资源文件）、audio（音频文件）、prefab（预制文件）
-    type ResFoldNames = 'clips' | 'res' | 'audio' | 'prefab'
+    //res（资源文件）、audio（音频文件）、prefab（预制文件）
+    type ResFoldNames = 'res' | 'audio' | 'prefab'
 
     interface ResManager {
 
