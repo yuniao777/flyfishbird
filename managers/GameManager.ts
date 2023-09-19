@@ -135,7 +135,7 @@ class GameManager {
     async setRootLayer(nameOrNode: string | cc.Node, data: object, varGroup?: string, clearAllPopLayer: boolean = true) {
 
         if (this.loadingLayer) {
-            return false;
+            return null;
         }
 
         this.loadingLayer = true;
@@ -170,7 +170,7 @@ class GameManager {
     async insertLayer(name: string, data: object, varGroup?: string, index?: number) {
 
         if (this.loadingLayer) {
-            return false;
+            return null;
         }
 
         this.loadingLayer = true;
