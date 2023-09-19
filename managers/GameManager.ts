@@ -24,6 +24,7 @@ class GameManager {
 
     private layerLoading: LayerLoading = {};
     private loadingScene = '';
+    private loadingLayer = false;
 
     init() {
         this.initUpdate();
@@ -132,6 +133,13 @@ class GameManager {
     }
 
     async setRootLayer(nameOrNode: string | cc.Node, data: object, varGroup?: string, clearAllPopLayer: boolean = true) {
+
+        if (this.loadingLayer) {
+            return false;
+        }
+
+        this.loadingLayer = true;
+
         let layer = await this.waitingPrefabLoadEnd(nameOrNode, false, data, varGroup);
         layer.zIndex = ROOT_LAYER_ZINDE;
 
@@ -154,10 +162,19 @@ class GameManager {
             }
         }
 
+        this.loadingLayer = false;
+
         return layer;
     }
 
     async insertLayer(name: string, data: object, varGroup?: string, index?: number) {
+
+        if (this.loadingLayer) {
+            return false;
+        }
+
+        this.loadingLayer = true;
+
         if (index === undefined) {
             index = this.layers.length;
         } else {
@@ -169,6 +186,9 @@ class GameManager {
         for (let i = 0; i < this.layers.length; ++i) {
             this.layers[i].zIndex = ROOT_LAYER_ZINDE + i;
         }
+
+        this.loadingLayer = false;
+
         return layer;
     }
 
