@@ -67,7 +67,11 @@ export default class TableView extends ScrollViewExtBase {
         this.itemY.push(totalHeight);
         let height = this.paddingBottom + totalHeight;
         let content = this.scrollView.content;
-        content.height = Math.max(content.parent.height, height);
+        if (this.autoFull) {
+            content.height = Math.max(content.parent.height, height);
+        } else {
+            content.height = height;
+        }
 
         let min = content.parent.height * (1 - content.parent.anchorY) - (1 - content.anchorY) * content.height;
         let max = min + content.height - content.parent.height
@@ -198,9 +202,8 @@ export default class TableView extends ScrollViewExtBase {
 
     getY(i: number, node: cc.Node) {
         let content = this.scrollView.content;
-        let paddingTop = this.paddingTop;
         let height = this.itemY[i + 1] - this.itemY[i] - (i === this.items.length - 1 ? 0 : this.spacingY);
-        let y = (1 - content.anchorY) * content.height - (this.itemY[i] + height / 2 + (0.5 - node.anchorY) * node.height + paddingTop);
+        let y = (1 - content.anchorY) * content.height - (this.itemY[i] + height / 2 + (0.5 - node.anchorY) * node.height);
         // console.log(y);
         return y;
     }
@@ -245,10 +248,11 @@ export default class TableView extends ScrollViewExtBase {
     }
 }
 
-// if (!CC_EDITOR) {
-//     cc.game.on(cc.game.EVENT_GAME_INITED, () => {
-//         ffb.dataManager.registAttribute('TableView', 'items', (comp: TableView, value: []) => {
-//             return comp.itemChangedNeedUpdate(true);
-//         });
-//     });
-// }
+if (!CC_EDITOR) {
+    cc.game.on(cc.game.EVENT_GAME_INITED, () => {
+        // ffb.dataManager.registAttribute('TableView', 'items', (comp: TableView, value: []) => {
+        //     return comp.itemChangedNeedUpdate(true);
+        // });
+        ffb.dataManager.registKeyword('tableview', 'TableView', 'items');
+    });
+}
