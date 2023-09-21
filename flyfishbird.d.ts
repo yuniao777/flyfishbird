@@ -4,6 +4,11 @@ namespace ffb {
     interface GameManager {
 
         /**
+         * 是否正在加载页面
+         */
+        loadingLayer: boolean;
+
+        /**
          * 添加某个函数到cocos的update阶段执行
          * @param fun 要执行的函数，当前帧的所有update执行完了才会执行
          * @param frame 延迟执行的帧数。0为当前帧，1为下一帧，以此类推
@@ -111,8 +116,8 @@ namespace ffb {
         /**
          * 注册类似Label一样动态修改string属性的组件的关键字。也就是说，注册的这个组件，需要有string属性。
          */
-        registLabelLike(keyword: string, compName: string);
-        getLabelLikes(): { keyword: string, compName: string }[];
+        registLabelLike(keyword: string, compName: string, wait?: ffb.AttrSetFun);
+        getLabelLikes(): { keyword: string, compName: string, wait?: ffb.AttrSetFun }[];
 
         /**
          * 注册事件

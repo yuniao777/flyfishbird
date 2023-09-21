@@ -44,7 +44,7 @@ class LanguageSetter {
     }
 
     set(v: string | number, force?: boolean) {
-        if (!force && this.value == v) {
+        if (!force && this.value === v) {
             return;
         }
         this.value = v;

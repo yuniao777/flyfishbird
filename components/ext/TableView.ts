@@ -253,6 +253,10 @@ if (!CC_EDITOR) {
         // ffb.dataManager.registAttribute('TableView', 'items', (comp: TableView, value: []) => {
         //     return comp.itemChangedNeedUpdate(true);
         // });
-        ffb.dataManager.registKeyword('tableview', 'TableView', 'items');
+        ffb.dataManager.registKeywordPromise('tableview', 'TableView', (tableview: TableView, v) => {
+            tableview._items = v;
+            return tableview.itemChangedNeedUpdate(true);
+        });
+        ffb.dataManager.registKeyword('tableviewasync', 'TableView', 'items');
     });
 }

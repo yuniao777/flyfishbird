@@ -155,7 +155,7 @@ cocos creator framework
 三、进阶用法
 1. varGroup 为了限定string变量引用的有效范围。
 - 有时候，我们一个item预制会多次使用，这时，就需要用varGroup去区分不同的引用变量。
-2. 带有string属性的组件都可通过 ffb.dataManager.registLabelLike 注册后使用语言变量。
+2. 带有string属性的组件都可通过 ffb.dataManager.registLabelLike 注册后使用语言变量。注册为 LabelLike 后，将变为单向绑定，也就是当string通过其他方式（比如用户输入）变化后，将不会同步。
 - 具体用法可以参考 VarSprite.ts 文件末尾的定义方式
 
 四、自带工具组件、内置关键字

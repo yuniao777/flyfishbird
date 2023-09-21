@@ -9,7 +9,7 @@ class DataManager {
     registAttrs: { [key: string]: { [key: string]: { set: ffb.AttrSetFun } } } = {};
     registKeywords: { [key: string]: ffb.KeywordAttr } = {};
     events: { [key: string]: { [key: string]: ffb.EventInfo } } = {};
-    langAttrs: { keyword: string, compName: string }[] = [];
+    langAttrs: { keyword: string, compName: string, wait?: ffb.AttrSetFun }[] = [];
 
     registAttribute(compName: string, attrName: string, set: ffb.AttrSetFun) {
         let attributes = this.registAttrs[compName]
@@ -40,13 +40,13 @@ class DataManager {
         return this.registKeywords[key];
     }
 
-    registLabelLike(keyword: string, compName: string) {
+    registLabelLike(keyword: string, compName: string, wait?: ffb.AttrSetFun) {
         let attr = this.langAttrs.find((info) => info.keyword === keyword);
         if (attr) {
             cc.error('请不要重复注册 ' + keyword);
             return;
         }
-        this.langAttrs.push({ keyword, compName });
+        this.langAttrs.push({ keyword, compName, wait });
     }
 
     getLabelLikes() {

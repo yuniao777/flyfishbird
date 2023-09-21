@@ -41,21 +41,32 @@ export default class ScrollViewExtBase extends ExtBase {
         return this._scrollView;
     }
 
+    protected onLoad(): void {
+        //widget会在update刷新
+        if (this.getComponent(cc.Widget)) {
+            let content = this.scrollView.content;
+            content.parent.on(cc.Node.EventType.SIZE_CHANGED, this.onParentSizeChange, this);
+        }
+    }
+
     onEnable() {
-        let content = this.scrollView.content;
-        content.parent.on(cc.Node.EventType.SIZE_CHANGED, this.updateLayout, this);
         this.node.on('scrolling', this.onScrollViewScroll, this);
         this.updateLayout();
     }
 
     onDisable() {
-        let content = this.scrollView.content;
-        content.parent.off(cc.Node.EventType.SIZE_CHANGED, this.updateLayout, this);
         this.node.off('scrolling', this.onScrollViewScroll, this);
     }
 
     onScrollViewScroll() {
 
+    }
+
+    onParentSizeChange() {
+        let content = this.scrollView.content;
+        content.y = content.parent.height / 2;;
+        this.updateLayout();
+        content.parent.off(cc.Node.EventType.SIZE_CHANGED, this.onParentSizeChange, this);
     }
 
     updateLayout() {
@@ -75,6 +86,9 @@ export default class ScrollViewExtBase extends ExtBase {
             let height = paddingTop;
             for (let i = 0; i < content.children.length; ++i) {
                 let child = content.children[i];
+                if (!cc.isValid(child, true)) {
+                    continue;
+                }
                 child.y = topY - height - child.height * (1 - child.anchorY);
                 height += child.height + spacingY;
             }
@@ -91,6 +105,9 @@ export default class ScrollViewExtBase extends ExtBase {
             let width = paddingLeft;
             for (let i = 0; i < content.children.length; ++i) {
                 let child = content.children[i];
+                if (!cc.isValid(child, true)) {
+                    continue;
+                }
                 child.x = leftX + width + child.width * child.anchorX;
                 width += child.width + spacingX;
             }
@@ -110,6 +127,9 @@ export default class ScrollViewExtBase extends ExtBase {
             let height = paddingTop;
             for (let i = 0; i < content.children.length; ++i) {
                 let child = content.children[i];
+                if (!cc.isValid(child, true)) {
+                    continue;
+                }
                 if (x + child.width > rightX) {
                     x = startX;
                     height += child.height + spacingY;

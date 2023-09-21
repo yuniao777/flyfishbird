@@ -229,13 +229,19 @@ export default class DataDealer extends cc.Component {
             let find = false;
             let keys = this.node.name.split('_');
             let labelLikes = ffb.dataManager.getLabelLikes();
-            if (dataType === 'string') {
+            if (dataType === 'string' || dataType === 'number') {
                 let findLabelLike = labelLikes.find((info) => keys.indexOf(info.keyword) >= 0);
                 if (findLabelLike) {
                     find = true;
                     let comp = this.node.getComponent(findLabelLike.compName);
                     this.langParent = dataParent;
                     ffb.langManager.bindLanguage(comp, this.langParent, '', this.varGroup);
+                    if (findLabelLike.wait) {
+                        counter.addCount();
+                        findLabelLike.wait(comp, comp.string).then(() => {
+                            counter.complelteOnce();
+                        });
+                    }
                 }
             }
 
@@ -410,6 +416,7 @@ if (!CC_EDITOR) {
         ffb.dataManager.registKeyword('button', 'cc.Button', 'interactable');
         ffb.dataManager.registKeyword('toggle', 'cc.Toggle', 'isChecked');
         ffb.dataManager.registKeyword('slider', 'cc.Slider', 'progress');
+        ffb.dataManager.registKeyword('editbox', 'cc.EditBox', 'string');
 
         ffb.dataManager.registLabelLike('label', 'cc.Label');
         ffb.dataManager.registLabelLike('richtext', 'cc.RichText');
