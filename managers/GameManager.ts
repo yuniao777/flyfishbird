@@ -117,11 +117,7 @@ class GameManager {
     }
 
     private initLayer(layer: cc.Node) {
-        let widget = layer.getComponent(cc.Widget);
-        if (widget) {
-            let safeArea = ffb.platform.getSafeArea();
-            widget.top = cc.winSize.height - safeArea.top;
-        }
+
     }
 
     addToAfterUpdate(fun: Function, frame: number = 0) {
