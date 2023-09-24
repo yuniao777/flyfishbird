@@ -18,12 +18,13 @@ export default class ScrollViewExtBase extends ExtBase {
     @property({ tooltip: '开启后，当content大小不足以撑满ScrollView时，将自动撑满ScrollView，使content可以滑动' }) autoFull = false;
 
     @property paddingTop = 0;
+    @property paddingBottom = 0;
     @property paddingLeft = 0;
+    @property paddingRight = 0;
+
     @property spacingY = 0;
     @property spacingX = 0;
 
-    paddingRight = 0;
-    paddingBottom = 0;
     /**
      * 0纵向排列。
      * 1横向排列。

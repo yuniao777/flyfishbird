@@ -296,6 +296,16 @@ class GameManager {
         ffb.dataManager.resetDataListen(node);
         node.destroy();
     }
+
+    destroyAllChildren(node: cc.Node) {
+        let children = [];
+        for (let i = 0; i < node.children.length; ++i) {
+            children.push(node.children[i]);
+        }
+        for (let i = 0; i < children.length; ++i) {
+            ffb.gameManager.destroyNode(children[i]);
+        }
+    }
 }
 
 export default GameManager

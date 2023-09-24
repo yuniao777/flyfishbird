@@ -23,7 +23,7 @@ function createDefineSetget(defineData: DefineData) {
         return {
             set: function (v) {
                 object[key] = v;
-                setter && setter();
+                setter && setter(v);
             },
             get: function () {
                 return object[key];

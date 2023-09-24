@@ -61,6 +61,7 @@ namespace ffb {
          * @param node 要销毁的节点
          */
         destroyNode(node: cc.Node);
+        destroyAllChildren(node: cc.Node);
 
         /**
          * 加载场景
