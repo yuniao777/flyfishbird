@@ -27,6 +27,8 @@ namespace ffb {
          * @returns left 安全区域左上角横坐标 right 安全区域右下角横坐标 top 安全区域左上角纵坐标 bottom 安全区域右下角纵坐标 width 安全区域的宽度，单位逻辑像素 height 安全区域的高度，单位逻辑像素
          */
         getSafeArea(): { left: number, right: number, top: number, bottom: number, width: number, height: number };
+
+        virbrate();
     }
 
     namespace PlatformTools {

@@ -412,7 +412,7 @@ if (!CC_EDITOR) {
         ffb.dataManager.registKeywordPromise('sprite', 'cc.Sprite', setSpriteFrame);
         ffb.dataManager.registKeywordPromise('skeleton', 'sp.Skeleton', setSkeletonData);
 
-        ffb.dataManager.registKeyword('progressBar', 'cc.ProgressBar', 'progress');
+        ffb.dataManager.registKeyword('progressbar', 'cc.ProgressBar', 'progress');
         ffb.dataManager.registKeyword('button', 'cc.Button', 'interactable');
         ffb.dataManager.registKeyword('toggle', 'cc.Toggle', 'isChecked');
         ffb.dataManager.registKeyword('slider', 'cc.Slider', 'progress');

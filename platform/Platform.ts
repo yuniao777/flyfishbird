@@ -38,8 +38,8 @@ export default class Platform {
     bindGetUserInfoNode(node: cc.Node, success: (data: pf.LittleGameUserInfoData) => {}, fail: () => {}) {
         console.warn('当前平台没有实现 bindGetUserInfoNode');
         // node.on('click', ()=>{
-            success && success({ userInfo: { nickName: '浏览器用户', avatarUrl: 'white_2x2' } });
-            // fail && fail();
+        success && success({ userInfo: { nickName: '浏览器用户', avatarUrl: 'white_2x2' } });
+        // fail && fail();
         // });
     }
 
@@ -55,6 +55,10 @@ export default class Platform {
     getSafeArea() {
         console.warn('当前平台没有实现 getSafeArea');
         return { left: 0, right: cc.winSize.width, top: cc.winSize.height, bottom: 0, width: cc.winSize.width, height: cc.winSize.height };
+    }
+
+    virbrate() {
+        console.warn('当前平台没有实现 getSafeArea');
     }
 }
 
