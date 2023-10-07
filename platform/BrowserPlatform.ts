@@ -19,7 +19,7 @@ export default class BrowserPlatform extends Platform {
 
     loadSubpackage(param: pf.LoadSubpackageParam): pf.LoadSubpackageTask {
         let task = new Listener();
-        cc.assetManager.loadBundle('home', () => {
+        cc.assetManager.loadBundle(param.name, () => {
             task.listener && task.listener({ progress: 1, totalBytesExpectedToWrite: 1, totalBytesWritten: 1 });
             param.success && param.success();
             param.complete && param.complete();
