@@ -5,6 +5,8 @@ let platform = pf.tt ? pf.tt : pf.qq ? pf.qq : pf.wx;
 export default class LittleGame extends Platform {
 
     authSetting: { [key: string]: boolean } = {};
+    rewardedVideoAds = {};
+    rewardedVideoAdInfo: { success: Function, fail: Function, loading: boolean } = { success: null, fail: null, loading: false };
 
     init() {
         platform.getSetting({
@@ -71,5 +73,56 @@ export default class LittleGame extends Platform {
         area.bottom = frameSize.height - area.bottom;
         area.top = area.top - frameSize.height;
         return area;
+    }
+
+
+    //错误码：  -1广告加载错误   -2广告未看完   -3没有合适的视频填充
+    showRewardVideoAd(adUnitId: any, success: any, fail: any): void {
+
+        if (this.rewardedVideoAdInfo.loading) {
+            return;
+        }
+
+        let rewardedVideoAd = this.rewardedVideoAds[adUnitId];
+        if (!rewardedVideoAd) {
+            rewardedVideoAd = platform.createRewardedVideoAd({ adUnitId: adUnitId });
+            rewardedVideoAd.onError(this._OnRewardVideoError.bind(this));
+            rewardedVideoAd.onClose(this._OnRewardVideoClose.bind(this));
+            this.rewardedVideoAds[adUnitId] = rewardedVideoAd;
+        }
+
+        this.rewardedVideoAdInfo.success = success;
+        this.rewardedVideoAdInfo.fail = fail;
+        this.rewardedVideoAdInfo.loading = true;
+
+        rewardedVideoAd.load().then(() => {
+            //console.log(adUnitId, "ShowRewardVideoAd loaded");
+            return rewardedVideoAd.show();
+        }).catch((err) => {
+            this.rewardedVideoAdInfo.loading = false;
+            //console.log(adUnitId, "ShowRewardVideoAd err", err);
+        });
+    }
+
+    private _OnRewardVideoError(err) {
+        this.rewardedVideoAdInfo.loading = false;
+        if (err.errCode == 1004) {
+            this.rewardedVideoAdInfo.fail && this.rewardedVideoAdInfo.fail(-3, err.errMsg);
+        } else {
+            this.rewardedVideoAdInfo.fail && this.rewardedVideoAdInfo.fail(-1, err.errMsg);
+        }
+        this.rewardedVideoAdInfo.success = null;
+        this.rewardedVideoAdInfo.fail = null;
+    }
+
+    private _OnRewardVideoClose(res) {
+        this.rewardedVideoAdInfo.loading = false;
+        if (res.isEnded) {
+            this.rewardedVideoAdInfo.success && this.rewardedVideoAdInfo.success();
+        } else {
+            this.rewardedVideoAdInfo.fail && this.rewardedVideoAdInfo.fail(-2);
+        }
+        this.rewardedVideoAdInfo.success = null;
+        this.rewardedVideoAdInfo.fail = null;
     }
 }

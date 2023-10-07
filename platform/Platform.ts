@@ -60,6 +60,10 @@ export default class Platform {
     virbrate() {
         console.warn('当前平台没有实现 getSafeArea');
     }
+
+    showRewardVideoAd(adUnitId, success, fail) {
+        console.warn('当前平台没有实现 showRewardVideoAd');
+    }
 }
 
 

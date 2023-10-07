@@ -29,6 +29,8 @@ namespace ffb {
         getSafeArea(): { left: number, right: number, top: number, bottom: number, width: number, height: number };
 
         virbrate();
+
+        showRewardVideoAd(adUnitId, success, fail);
     }
 
     namespace PlatformTools {

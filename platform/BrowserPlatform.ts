@@ -30,4 +30,8 @@ export default class BrowserPlatform extends Platform {
     getSafeArea() {
         return { left: 0, right: cc.winSize.width, top: cc.winSize.height, bottom: 0, width: cc.winSize.width, height: cc.winSize.height };
     }
+
+    showRewardVideoAd(adUnitId, success, fail) {
+        success && success();
+    }
 }
