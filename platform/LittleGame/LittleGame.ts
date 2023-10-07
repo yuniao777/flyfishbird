@@ -27,11 +27,11 @@ export default class LittleGame extends Platform {
         }
         let success = p.success;
         p.success = function () {
-            cc.assetManager.loadBundle(p.name, () => {
+            ffb.resManager.addBundleByName(p.name).then(()=>{
                 success && success();
             });
         }
-        return platform.loadSubpackage(param);
+        return platform.loadSubpackage(p);
     }
 
     applyAuthorize(scope: pf.WXAuthType & pf.TTAuthType, success: () => void, fail: () => void) {
