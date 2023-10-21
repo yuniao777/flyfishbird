@@ -22,6 +22,14 @@ class TTPlatform extends LittleGame {
         }
 
     }
+
+    virbrate(short: boolean = true, type: 'heavy' | 'medium' | 'light' = 'heavy'): void {
+        if (short) {
+            pf.tt.vibrateShort();
+        } else {
+            pf.tt.vibrateLong();
+        }
+    }
 }
 
 export default TTPlatform;

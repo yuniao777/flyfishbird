@@ -139,7 +139,7 @@ namespace ffb {
     }
 
     //res（资源文件）、audio（音频文件）、prefab（预制文件）
-    type ResFoldNames = 'res' | 'audio' | 'prefab'
+    type ResFoldNames = 'res' | 'audio' | 'prefab' | 'share'
 
     interface ResManager {
 

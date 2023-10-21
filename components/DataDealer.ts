@@ -386,6 +386,9 @@ async function setSpriteFrame(comp: cc.Sprite, sf: string) {
             let spriteFrameName = sf.substring(idx + 1);
             let atlas = await ffb.resManager.loadRes(textureName, cc.SpriteAtlas);
             spriteFrame = atlas.getSpriteFrame(spriteFrameName);
+            if (!spriteFrame) {
+                console.error(`没有在${textureName}中找到${spriteFrameName}`);
+            }
         } else {
             spriteFrame = await ffb.resManager.loadRes(sf, cc.SpriteFrame);
         }

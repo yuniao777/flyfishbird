@@ -48,7 +48,7 @@ export default class Platform {
         success && success();
     }
 
-    applyAuthorizeSync(scope: pf.WXAuthType & pf.TTAuthType) {
+    isAuthorize(scope: pf.WXAuthType & pf.TTAuthType) {
         return true
     }
 
@@ -57,12 +57,35 @@ export default class Platform {
         return { left: 0, right: cc.winSize.width, top: cc.winSize.height, bottom: 0, width: cc.winSize.width, height: cc.winSize.height };
     }
 
-    virbrate() {
-        console.warn('当前平台没有实现 getSafeArea');
+    virbrate(short: boolean = true, type: 'heavy' | 'medium' | 'light' = 'heavy'): void {
+        console.warn('当前平台没有实现 virbrate');
     }
 
     showRewardVideoAd(adUnitId, success, fail) {
         console.warn('当前平台没有实现 showRewardVideoAd');
+    }
+
+    getLaunchOptionsSync(): pf.LaunchOptions {
+        console.warn('当前平台没有实现 getLaunchOptionsSync');
+        return null;
+    }
+
+    getSystemInfoSync(): pf.SystemInfoData {
+        console.warn('当前平台没有实现 getSystemInfoSync');
+        return null;
+    }
+
+    onShareAppMessage(func: () => pf.ShareParams): void {
+        console.warn('当前平台没有实现 onShareAppMessage');
+    }
+
+    shareAppMessage(object: pf.ShareParams) {
+        console.warn('当前平台没有实现 shareAppMessage');
+    }
+
+
+    requestSubscribeSystemMessage(object: pf.WXSubscribeSystemMessageParams) {
+        console.warn('当前平台没有实现 requestSubscribeSystemMessage');
     }
 }
 

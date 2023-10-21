@@ -21,16 +21,25 @@ namespace ffb {
         bindGetUserInfoNode(node: cc.Node, success: (data: pf.LittleGameUserInfoData) => void, fail: (errCode: 1001 | 1002) => void);
 
         applyAuthorize(scope: pf.WXAuthType & pf.TTAuthType, success: () => void, fail: () => void);
-        applyAuthorizeSync(scope: pf.WXAuthType & pf.TTAuthType): boolean;
+        isAuthorize(scope: pf.WXAuthType & pf.TTAuthType): boolean;
+        requestSubscribeSystemMessage(object: pf.WXSubscribeSystemMessageParams);
 
         /**
          * @returns left 安全区域左上角横坐标 right 安全区域右下角横坐标 top 安全区域左上角纵坐标 bottom 安全区域右下角纵坐标 width 安全区域的宽度，单位逻辑像素 height 安全区域的高度，单位逻辑像素
          */
         getSafeArea(): { left: number, right: number, top: number, bottom: number, width: number, height: number };
 
-        virbrate();
+        virbrate(short: boolean = true, type: 'heavy' | 'medium' | 'light' = 'heavy');
 
         showRewardVideoAd(adUnitId, success, fail);
+
+        getLaunchOptionsSync(): pf.LaunchOptions;
+
+        getSystemInfoSync(): pf.SystemInfoData;
+
+        onShareAppMessage(func: () => pf.ShareParams);
+
+        shareAppMessage(object: pf.ShareParams);
     }
 
     namespace PlatformTools {
@@ -88,6 +97,9 @@ namespace pf {
 // little game 
 namespace pf {
 
+    interface LaunchOptions {
+        scene: number,
+    }
 
     interface LoadSubpackageObject {
         name: string,
@@ -114,7 +126,15 @@ namespace pf {
     }
 
     interface SystemInfoData {
-        safeArea: { left: number, right: number, top: number, bottom: number, width: number, height: number }
+        safeArea: { left: number, right: number, top: number, bottom: number, width: number, height: number },
+        platform: string,
+        model: string,
+        SDKVersion: string,
+    }
+
+    interface ShareParams {
+        title?: string,
+        imageUrl?: string,
     }
 
     /**
@@ -123,6 +143,9 @@ namespace pf {
     interface LittleGameApi {
         loadSubpackage(object: LoadSubpackageObject): LoadSubpackageTask;
         getSystemInfoSync(): SystemInfoData;
+        getLaunchOptionsSync(): LaunchOptions;
+        onShareAppMessage(func: () => pf.ShareParams);
+        shareAppMessage(object: pf.ShareParams);
     }
 
 }
@@ -189,6 +212,12 @@ namespace pf {
         fail: () => void
     }
 
+    interface WXSubscribeSystemMessageParams {
+        msgTypeList: string[],
+        success?: Function,
+        fail?: Function,
+    }
+
     type WXAuthType = 'scope.userInfo' | 'scope.userLocation' | 'scope.werun' | 'scope.writePhotosAlbum' | 'scope.WxFriendInteraction' | 'scope.gameClubData'
 
     /**
@@ -200,6 +229,11 @@ namespace pf {
         createUserInfoButton(object: WXCreateUserInfoButtonObject): WXUserInfoButton;
         getSetting(object: WXGetSettingObject);
         authorize(object: WXAuthorizeObject);
+        vibrateShort(object: { type: 'heavy' | 'medium' | 'light' });
+        vibrateLong();
+        requestSubscribeSystemMessage(object: WXSubscribeSystemMessageParams);
+        requirePrivacyAuthorize(object: { success: Function, fail: Function });
+        exitMiniProgram(object: { success?: Function, fail?: Function });
     }
     export let wx: WX;
 }
@@ -276,6 +310,8 @@ namespace pf {
         getUserInfo(object: TTGetUserInfoObject);
         getSetting(object: TTGetSettingObject);
         authorize(object: TTAuthorizeObject);
+        vibrateShort();
+        vibrateLong();
     }
 
     export let tt: TT;

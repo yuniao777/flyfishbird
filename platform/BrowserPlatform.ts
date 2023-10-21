@@ -28,10 +28,40 @@ export default class BrowserPlatform extends Platform {
     }
 
     getSafeArea() {
-        return { left: 0, right: cc.winSize.width, top: cc.winSize.height, bottom: 0, width: cc.winSize.width, height: cc.winSize.height };
+        return this.getSystemInfoSync().safeArea;
     }
 
     showRewardVideoAd(adUnitId, success, fail) {
         success && success();
+    }
+
+    getSystemInfoSync(): pf.SystemInfoData {
+        return {
+            model: 'win11',
+            platform: 'windows',
+            safeArea: {
+                left: 0, right: cc.winSize.width, top: cc.winSize.height, bottom: 0, width: cc.winSize.width, height: cc.winSize.height
+            }
+        };
+    }
+
+    getLaunchOptionsSync(): pf.LaunchOptions {
+        return { scene: 0 }
+    }
+
+    virbrate(): void {
+        console.log('virbrate');
+    }
+
+    onShareAppMessage(func: () => pf.ShareParams): void {
+
+    }
+
+    shareAppMessage(object: pf.ShareParams): void {
+
+    }
+
+    requestSubscribeSystemMessage() {
+        console.log('requestSubscribeSystemMessage');
     }
 }

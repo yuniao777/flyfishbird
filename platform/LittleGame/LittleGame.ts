@@ -5,13 +5,18 @@ let platform = pf.tt ? pf.tt : pf.qq ? pf.qq : pf.wx;
 export default class LittleGame extends Platform {
 
     authSetting: { [key: string]: boolean } = {};
+    subscriptionsSetting: { [key: string]: boolean } = {};
     rewardedVideoAds = {};
     rewardedVideoAdInfo: { success: Function, fail: Function, loading: boolean } = { success: null, fail: null, loading: false };
 
     init() {
         platform.getSetting({
+            withSubscriptions: true,
             success: (data) => {
                 this.authSetting = data.authSetting;
+                if (data.subscriptionsSetting) {
+                    this.subscriptionsSetting = data.subscriptionsSetting;
+                }
             }
         });
     }
@@ -27,7 +32,7 @@ export default class LittleGame extends Platform {
         }
         let success = p.success;
         p.success = function () {
-            ffb.resManager.addBundleByName(p.name).then(()=>{
+            ffb.resManager.addBundleByName(p.name).then(() => {
                 success && success();
             });
         }
@@ -42,8 +47,12 @@ export default class LittleGame extends Platform {
         });
     }
 
-    applyAuthorizeSync(scope: pf.WXAuthType & pf.TTAuthType) {
+    isAuthorize(scope: pf.WXAuthType & pf.TTAuthType) {
         return !!this.authSetting[scope];
+    }
+
+    isAuthorizeSubscriptionsMessage(message: string) {
+        return this.subscriptionsSetting.itemSettings[message] === 'accept';
     }
 
     /**
@@ -124,5 +133,21 @@ export default class LittleGame extends Platform {
         }
         this.rewardedVideoAdInfo.success = null;
         this.rewardedVideoAdInfo.fail = null;
+    }
+
+    getLaunchOptionsSync(): pf.LaunchOptions {
+        return platform.getLaunchOptionsSync();
+    }
+
+    getSystemInfoSync(): pf.SystemInfoData {
+        return platform.getSystemInfoSync();
+    }
+
+    onShareAppMessage(func: () => pf.ShareParams): void {
+        platform.onShareAppMessage(func);
+    }
+
+    shareAppMessage(object: pf.ShareParams): void {
+        platform.shareAppMessage(object);
     }
 }
