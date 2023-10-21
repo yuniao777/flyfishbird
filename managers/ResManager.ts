@@ -17,6 +17,10 @@ class ResManager {
     allResources: AllResource = {};
     netAssets: { [key: string]: cc.Asset } = {};
 
+    initInEditor() {
+
+    }
+
     addBundleByName(name: string): Promise<boolean> {
         return new Promise((resolve) => {
             cc.assetManager.loadBundle(name, (err, bundle) => {
@@ -206,6 +210,19 @@ class ResManager {
 
     getBundle(name: string) {
         return this.bundles[name];
+    }
+}
+
+if (CC_EDITOR) {
+    // let uuid = Editor.assetdb.urlToUuid('db://assets/resources/res/achievement');
+    // cc.assetManager.loadAny({uuid:uuid}, (err, ass)=>{
+    //     Editor.log(err, ass, );
+    // });
+    // ResManager.prototype.loadResource = 
+    ResManager.prototype.initInEditor = function () {
+        Editor.Ipc.sendToMain('ls_package:load-resource-file', {});
+        Editor.Scene.callSceneScript('ls_package', 'update_autoSprite_property', '', () => {
+        });
     }
 }
 

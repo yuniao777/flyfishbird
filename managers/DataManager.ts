@@ -8,7 +8,7 @@ class DataManager {
 
     registAttrs: { [key: string]: { [key: string]: { set: ffb.AttrSetFun } } } = {};
     registKeywords: { [key: string]: ffb.KeywordAttr } = {};
-    events: { [key: string]: { [key: string]: ffb.EventInfo } } = {};
+    events: ffb.NodeEvents = {};
     langAttrs: { keyword: string, compName: string, wait?: ffb.AttrSetFun }[] = [];
 
     registAttribute(compName: string, attrName: string, set: ffb.AttrSetFun) {
@@ -59,6 +59,14 @@ class DataManager {
             nodeNameEvents = this.events[nodeName] = {};
         }
         nodeNameEvents[eventType] = { callback, target, useCapture };
+    }
+
+    unregistEvent(nodeName: string, eventType: string) {
+        let nodeNameEvents = this.events[nodeName];
+        if (!nodeNameEvents) {
+            return;
+        }
+        delete nodeNameEvents[eventType];
     }
 
     getEvents(nodeName: string) {
@@ -153,7 +161,7 @@ class DataManager {
                 });
             }
         }
-        let events = ffb.dataManager.getEvents(node.name);
+        let events = this.getEvents(node.name);
         if (events) {
             let comp = node.getComponent(EventDealer);
             if (!comp) {
@@ -164,6 +172,22 @@ class DataManager {
         for (let i = 0, l = children.length; i < l; i++) {
             let c = children[i];
             this._dealDataToAllChildren(c, priority, data, async, taskTag, counter, varGroup);
+        }
+    }
+
+    addNodeEvents(node: cc.Node, nodeEvents: ffb.NodeEvents) {
+        let events = nodeEvents[node.name];
+        if (events) {
+            let comp = node.getComponent(EventDealer);
+            if (!comp) {
+                node.addComponent(EventDealer);
+            }
+            comp.dealEvents(events);
+        }
+        let children = node.children;
+        for (let i = 0, l = children.length; i < l; i++) {
+            let c = children[i];
+            this.addNodeEvents(c, nodeEvents);
         }
     }
 

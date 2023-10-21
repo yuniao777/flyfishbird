@@ -6,7 +6,7 @@ namespace ffb {
         /**
          * 是否正在加载页面
          */
-        loadingLayer: boolean;
+        // loadingLayer: boolean;
 
         /**
          * 添加某个函数到cocos的update阶段执行
@@ -42,6 +42,8 @@ namespace ffb {
          * @param nameOrIndex 弹窗的名称或者所在位置的索引，默认为顶部layer
          */
         popLayer(nameOrIndex?: string | number);
+
+        layerExit(name: string): boolean;
 
         /**
          * 移除并销毁RootLayer之外的所有layer
@@ -92,6 +94,14 @@ namespace ffb {
         useCapture?: boolean;
     }
 
+    interface TypeEvents {
+        [key: string]: ffb.EventInfo
+    }
+    
+    interface NodeEvents {
+        [key: string]: TypeEvents
+    }
+
     interface DataManager {
         /**
          * 注册组件的属性修改时执行的方法。仅在有同步操作，需要等待操作完成（比如加载资源）的时候才需要注册。如果是异步，无需注册。
@@ -121,10 +131,17 @@ namespace ffb {
         getLabelLikes(): { keyword: string, compName: string, wait?: ffb.AttrSetFun }[];
 
         /**
-         * 注册事件
+         * 注册全局节点事件。注册后，只要通过GameManager创建的节点（或者dealData处理过的节点），都会触发该事件。
+         * 注意：只对注册后创建的节点才能生效。推荐在 EVENT_GAME_INITED 注册这类事件。
          */
         registEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean)
-        getEvents(nodeName: string): { [key: string]: EventInfo };
+        getEvents(nodeName: string): TypeEvents;
+        unregistEvent(nodeName: string, eventType: string);
+
+        /**
+         * 添加节点事件，节点销毁，事件会自动注销
+         */
+        addNodeEvents(node: cc.Node, nodeEvents: NodeEvents);
 
         /**
          * 
