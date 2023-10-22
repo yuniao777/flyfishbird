@@ -163,10 +163,7 @@ class DataManager {
         }
         let events = this.getEvents(node.name);
         if (events) {
-            let comp = node.getComponent(EventDealer);
-            if (!comp) {
-                node.addComponent(EventDealer);
-            }
+            node.getComponent(EventDealer) || node.addComponent(EventDealer);
         }
         let children = node.children;
         for (let i = 0, l = children.length; i < l; i++) {
@@ -178,10 +175,7 @@ class DataManager {
     addNodeEvents(node: cc.Node, nodeEvents: ffb.NodeEvents) {
         let events = nodeEvents[node.name];
         if (events) {
-            let comp = node.getComponent(EventDealer);
-            if (!comp) {
-                node.addComponent(EventDealer);
-            }
+            let comp = node.getComponent(EventDealer) || node.addComponent(EventDealer);
             comp.dealEvents(events);
         }
         let children = node.children;
