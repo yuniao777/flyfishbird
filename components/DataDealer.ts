@@ -22,8 +22,8 @@ function createDefineSetget(defineData: DefineData) {
         let key = data.key;
         return {
             set: function (v) {
-                object[key] = v;
-                setter && setter(v);
+                object[key] = v;     
+                // setter && setter(v);
             },
             get: function () {
                 return object[key];
@@ -333,10 +333,11 @@ export default class DataDealer extends cc.Component {
                                                 counter.complelteOnce();
                                                 this.valueChangeComponent && this.valueChangeComponent(name, v);
                                             });
-                                        }, data: {
-                                            object: comp,
-                                            key: name,
-                                        }
+                                        },  
+                                        // data: {
+                                        //     object: comp,
+                                        //     key: name,
+                                        // }
                                     });
                                 } else {
                                     if (name === 'string' && labelLikes.find((info) => cc.js.getClassName(info.compName) === classObj)) {
@@ -409,8 +410,8 @@ async function setSkeletonData(comp: sp.Skeleton, sd: string) {
 
 if (!CC_EDITOR) {
     cc.game.on(cc.game.EVENT_GAME_INITED, () => {
-        ffb.dataManager.registAttribute('cc.Sprite', 'spriteFrame', setSpriteFrame);
-        ffb.dataManager.registAttribute('sp.Skeleton', 'skeletonData', setSkeletonData);
+        ffb.dataManager.registAttribute('cc_Sprite', 'spriteFrame', setSpriteFrame);
+        ffb.dataManager.registAttribute('sp_Skeleton', 'skeletonData', setSkeletonData);
 
         ffb.dataManager.registKeywordPromise('sprite', 'cc.Sprite', setSpriteFrame);
         ffb.dataManager.registKeywordPromise('skeleton', 'sp.Skeleton', setSkeletonData);
