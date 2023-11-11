@@ -340,7 +340,7 @@ export default class DataDealer extends cc.Component {
                                         // }
                                     });
                                 } else {
-                                    if (name === 'string' && labelLikes.find((info) => cc.js.getClassName(info.compName) === classObj)) {
+                                    if (name === 'string' && labelLikes.find((info) => cc.js.getClassByName(info.compName) === classObj)) {
                                         this.langParent = compData;
                                         ffb.langManager.bindLanguage(comp as ffb.LabelLike, this.langParent, name, this.varGroup);
                                     } else {
