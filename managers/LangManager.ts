@@ -21,7 +21,7 @@ type BindKeys = { [key: string]: SetterValueType };
 
 class LanguageSetter {
 
-    value: string | number = '';
+    value: string | number;
     splitArray = [];
     lastBindKeys: BindKeys = {};
     parent: LanguageSetter = null;
