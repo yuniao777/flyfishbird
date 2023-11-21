@@ -35,7 +35,7 @@ namespace ffb {
          * @param data layer要绑定的数据
          * @param index layer插入到哪一层弹窗，默认为顶部位置
          */
-        insertLayer(name: string, data: object, varGroup?: string, index?: number): Promise<cc.Node>;
+        insertLayer(nameOrNode: string | cc.Node, data: object, varGroup?: string, index?: number): Promise<cc.Node>;
 
         /**
          * 从layer栈（弹窗）删除一个layer。注意：rootLayer无法通过此方法删除，只能通过setRootLayer替换
@@ -95,9 +95,9 @@ namespace ffb {
     }
 
     interface TypeEvents {
-        [key: string]: ffb.EventInfo
+        [key: string]: EventInfo[]
     }
-    
+
     interface NodeEvents {
         [key: string]: TypeEvents
     }
@@ -136,7 +136,7 @@ namespace ffb {
          */
         registEvent(nodeName: string, eventType: string, callback: Function, target?: any, useCapture?: boolean)
         getEvents(nodeName: string): TypeEvents;
-        unregistEvent(nodeName: string, eventType: string);
+        unregistEvent(nodeName: string, eventType: string, callback: Function, target?: any);
 
         /**
          * 添加节点事件，节点销毁，事件会自动注销

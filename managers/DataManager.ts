@@ -58,15 +58,28 @@ class DataManager {
         if (!nodeNameEvents) {
             nodeNameEvents = this.events[nodeName] = {};
         }
-        nodeNameEvents[eventType] = { callback, target, useCapture };
+        let callbacks = nodeNameEvents[eventType];
+        if (!callbacks) {
+            callbacks = nodeNameEvents[eventType] = [];
+        }
+        callbacks.push({ callback, target, useCapture });
     }
 
-    unregistEvent(nodeName: string, eventType: string) {
+    unregistEvent(nodeName: string, eventType: string, callback?: Function) {
         let nodeNameEvents = this.events[nodeName];
         if (!nodeNameEvents) {
             return;
         }
-        delete nodeNameEvents[eventType];
+        let callbacks = nodeNameEvents[eventType];
+        if (!callbacks) {
+            return;
+        }
+        let idx = callbacks.findIndex((v) => v.callback === callback);
+        if (idx >= 0) {
+            callbacks.splice(idx);
+        } else {
+            console.error(`delete fail ${nodeName} ${eventType}`);
+        }
     }
 
     getEvents(nodeName: string) {

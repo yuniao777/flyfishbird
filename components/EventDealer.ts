@@ -24,19 +24,25 @@ export default class EventDealer extends cc.Component {
     dealEvents(events: ffb.TypeEvents) {
         let _this = this;
         for (const key in events) {
-            const eventInfo = events[key];
-            let event_id = key + EVENT_COUNTER ++;
-            this.node.on(key, function () {
-                let args = [];
-                let tag = _this.node.getComponent(NodeEventTag);
-                if (tag) {
-                    args.push(tag.getTag());
-                }
-                for (let i = 0; i < arguments.length; ++i) {
-                    args.push(arguments[i]);
-                }
-                _this.callEvent(eventInfo, args, event_id);
-            }, eventInfo.target, eventInfo.useCapture);
+            const eventInfos = events[key];
+            for (let i = 0; i < eventInfos.length; ++i) {
+                let eventInfo = eventInfos[i];
+                let event_id = key + EVENT_COUNTER++;
+                this.node.on(key, function () {
+                    if (!cc.isValid(_this)) {
+                        return;
+                    }
+                    let args = [];
+                    let tag = _this.node.getComponent(NodeEventTag);
+                    if (tag) {
+                        args.push(tag.getTag());
+                    }
+                    for (let i = 0; i < arguments.length; ++i) {
+                        args.push(arguments[i]);
+                    }
+                    _this.callEvent(eventInfo, args, event_id);
+                }, eventInfo.target, eventInfo.useCapture);
+            }
         }
     }
 

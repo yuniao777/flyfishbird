@@ -154,14 +154,14 @@ class GameManager {
         return layer;
     }
 
-    async insertLayer(name: string, data: object, varGroup?: string, index?: number) {
+    async insertLayer(nameOrNode: string, data: object, varGroup?: string, index?: number) {
 
         if (index === undefined) {
             index = this.layers.length;
         } else {
             index = Math.max(Math.min(index, this.layers.length), 1);
         }
-        let layer = await this.waitingPrefabLoadEnd(name, false, data, varGroup);
+        let layer = await this.waitingPrefabLoadEnd(nameOrNode, false, data, varGroup);
         this.initLayer(layer);
         this.layers.splice(index, 0, layer);
         for (let i = 0; i < this.layers.length; ++i) {
