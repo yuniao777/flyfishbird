@@ -18,12 +18,15 @@ const DEFAULT_PRIORITY = 5;
 class GameManager {
 
     staticBackground = true;
+    staticSprite: cc.Sprite = null;
 
     private updateFuns: UpdateFun[] = [];
     private layers: cc.Node[] = [];
 
     private layerLoading: LayerLoading = {};
     private loadingScene = '';
+
+    private publicCamera: cc.Camera = null;
 
     init() {
         this.initUpdate();
@@ -168,7 +171,69 @@ class GameManager {
             this.layers[i].zIndex = ROOT_LAYER_ZINDE + i;
         }
 
+        this.updateStaticBackground();
+
         return layer;
+    }
+
+    private updateStaticBackground() {
+        if (!this.staticBackground) {
+            return
+        }
+        if (!cc.isValid(this.staticSprite)) {
+            let node = new cc.Node('StaticBackground');
+            node.scaleY = -1;
+            // let widget = node.addComponent(cc.Widget);
+            // widget.top = 0; widget.bottom = 0; widget.left = 0; widget.right = 0;
+            cc.find('Canvas').addChild(node);
+            this.staticSprite = node.addComponent(cc.Sprite);
+            let tex = new cc.RenderTexture();
+            tex.initWithSize(cc.winSize.width, cc.winSize.height, cc.RenderTexture.DepthStencilFormat.RB_FMT_D24S8);
+            this.staticSprite.spriteFrame = new cc.SpriteFrame(tex);
+        }
+
+        let staticNode = this.staticSprite.node;
+        if (this.layers.length <= 1) {
+            staticNode.active = false;
+            this.layers[this.layers.length - 1].opacity = 255;
+            return;
+        }
+        staticNode.active = true;
+
+        let tex: cc.RenderTexture = this.staticSprite.spriteFrame.getTexture() as cc.RenderTexture;
+        let parent = this.layers[0].parent;
+        let node = new cc.Node();
+        node.parent = cc.find('Canvas');
+        let camera = this.getPublicCamera();
+        camera.targetTexture = tex;
+        camera.node.active = true;
+        camera.node.x = cc.winSize.width / 2;
+        camera.node.y = cc.winSize.height / 2;
+        for (let i = 0; i < this.layers.length - 1; ++i) {
+            let layer = this.layers[i];
+            layer.parent = node;
+        }
+        camera.render(node);
+        for (let i = 0; i < this.layers.length - 1; ++i) {
+            let layer = this.layers[i];
+            layer.parent = parent;
+            layer.opacity = 0;
+        }
+        this.layers[this.layers.length - 1].opacity = 255;
+        camera.node.active = false;
+        camera.targetTexture = null;
+        node.destroy();
+    }
+
+    getPublicCamera(): cc.Camera {
+        if (this.publicCamera) {
+            return this.publicCamera;
+        }
+        let node = new cc.Node('PublicCameraNode');
+        this.publicCamera = node.addComponent(cc.Camera);
+        cc.game.addPersistRootNode(node);
+        this.publicCamera.node.active = false;
+        return this.publicCamera;
     }
 
     popLayer(nameOrIndex?: string | number) {
@@ -200,6 +265,8 @@ class GameManager {
         for (let i = 0; i < this.layers.length; ++i) {
             this.layers[i].zIndex = ROOT_LAYER_ZINDE + i;
         }
+
+        this.updateStaticBackground();
     }
 
     clearAllPopLayer() {
