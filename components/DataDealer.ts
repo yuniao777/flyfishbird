@@ -22,7 +22,7 @@ function createDefineSetget(defineData: DefineData) {
         let key = data.key;
         return {
             set: function (v) {
-                object[key] = v;     
+                object[key] = v;
                 // setter && setter(v);
             },
             get: function () {
@@ -49,7 +49,7 @@ export default class DataDealer extends cc.Component {
 
     dataParent = null;
     langParent = null;
-
+    langKey = '';
     _varGroup = '';
     dispatchPriority = 0;
 
@@ -112,7 +112,7 @@ export default class DataDealer extends cc.Component {
 
     unBindLanguage() {
         let comp = this.getLabelLikeComp();
-        comp && ffb.langManager.unBindLanguage(comp, this.langParent, this.varGroup);
+        comp && ffb.langManager.unBindLanguage(comp, this.langParent, this.langKey, this.varGroup);
     }
 
     getLabelLikeComp() {
@@ -333,7 +333,7 @@ export default class DataDealer extends cc.Component {
                                                 counter.complelteOnce();
                                                 this.valueChangeComponent && this.valueChangeComponent(name, v);
                                             });
-                                        },  
+                                        },
                                         // data: {
                                         //     object: comp,
                                         //     key: name,
@@ -342,6 +342,7 @@ export default class DataDealer extends cc.Component {
                                 } else {
                                     if (name === 'string' && labelLikes.find((info) => cc.js.getClassByName(info.compName) === classObj)) {
                                         this.langParent = compData;
+                                        this.langKey = name;
                                         ffb.langManager.bindLanguage(comp as ffb.LabelLike, this.langParent, name, this.varGroup);
                                     } else {
                                         props[name] = createDefineSetget({ data: { object: comp, key: name } });

@@ -314,7 +314,7 @@ namespace ffb {
          * 解绑文本对象
          * @param comp 需要解绑的组件
          */
-        unBindLanguage(comp: ffb.LabelLike, data?: object, varGroup?: string);
+        unBindLanguage(comp: ffb.LabelLike, data?: object, key?: string, varGroup?: string);
 
     }
 

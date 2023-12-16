@@ -27,7 +27,6 @@ class LanguageSetter {
     parent: LanguageSetter = null;
     varGroup: string = '';
 
-    nodeName: string = '';
     uuid: string = getUuid().toString();
 
     components: { [key: string]: ffb.LabelLike } = {};
@@ -93,7 +92,7 @@ class LanguageSetter {
                         return value instanceof LanguageSetter ? value.value : this.lastBindKeys[key];
                     }
                 };
-                mutilpleDefineProperties.addValueProps(languageObject, props, this.nodeName, 'LanguangeManager', this.uuid);
+                mutilpleDefineProperties.addValueProps(languageObject, props, '', 'LanguangeManager', this.uuid);
             }
 
             bindKeys[key] = value;
@@ -128,7 +127,6 @@ class LanguageSetter {
         if (typeof v === 'string' && v.match(KeyRegex)) {
             let setter = new LanguageSetter();
             setter.parent = this;
-            setter.nodeName = this.nodeName;
             setter.varGroup = this.varGroup;
             setter.set(v);
             return setter;
@@ -152,7 +150,7 @@ class LanguageSetter {
         for (const bindKey in this.lastBindKeys) {
             const bindData = this.lastBindKeys[bindKey];
             let varParent = this.getLanguageObject(bindKey);
-            mutilpleDefineProperties.removeValueProps(varParent, [bindKey], this.nodeName, 'LanguangeManager', this.uuid);
+            mutilpleDefineProperties.removeValueProps(varParent, [bindKey], '', 'LanguangeManager', this.uuid);
             if (bindData instanceof LanguageSetter) {
                 bindData.destroy();
             }
@@ -168,19 +166,13 @@ class LanguageSetter {
     }
 }
 
-interface SetterUuid {
-    setter: LanguageSetter;
-    uuid: string;
+interface SetterWithPropName {
+    [key: string]: LanguageSetter;
 }
 
-interface SetterData {
-    setterUuids: SetterUuid[];
+interface SetterWithData {
+    setters: SetterWithPropName;
     parentData: object;
-    parentKey: string;
-}
-
-interface BundleSetter {
-    [key: string]: SetterData[];
 }
 
 // ${} 在data里面找变量      @{} 在语言文件里面找key
@@ -190,7 +182,7 @@ class LangManager {
 
     language: ffb.LanguageObject = {};
     languageVar: ffb.KeyLanguage = {};
-    setters: BundleSetter = {};
+    setterWithDatas: SetterWithData[] = [];
 
     setLanguage(language: ffb.LanguageObject) {
         for (const key in language) {
@@ -231,61 +223,48 @@ class LangManager {
         return key in this.language;
     }
 
-    unBindLanguage(comp: ffb.LabelLike, data?: object, varGroup?: string) {
+    unBindLanguage(comp: ffb.LabelLike, data?: object, key?: string, varGroup?: string) {
         data = data ?? this.language;
         varGroup = varGroup || '';
+        key = key || comp.node.name;
 
-        let nodeName = comp.node.name;
-        let setterKey = this.genSetterKey(nodeName);
-        let setterDatas = this.setters[setterKey];
-        if (!setterDatas) {
+        // let nodeName = comp.node.name;
+        // let setterKey = this.genSetterKey(nodeName);
+        // let setterDatas = this.setters[setterKey];
+        // if (!setterDatas) {
+        //     return;
+        // }
+        // let { setterData, idx } = this.getSetterData(setterDatas, data);
+        // if (!setterData) {
+        //     console.error('无法根据data找到对应的数据');
+        //     return;
+        // }
+        // let setterUuids = setterData.setterUuids;
+        // let { setter, i } = this.getSetterByVarGrounp(setterData.setterUuids, varGroup);
+        // if (!setter) {
+        //     console.error('无法根据varGroup找到对应的数据');
+        //     return;
+        // }
+        let idx = this.setterWithDatas.findIndex((value) => value.parentData === data);
+        if (idx < 0) {
+            console.error('unBindLanguage setterWithData error');
             return;
         }
-        let { setterData, idx } = this.getSetterData(setterDatas, data);
-        if (!setterData) {
-            console.error('无法根据data找到对应的数据');
-            return;
-        }
-        let setterUuids = setterData.setterUuids;
-        let { setter, i } = this.getSetterByVarGrounp(setterData.setterUuids, varGroup);
+        let setterWithData = this.setterWithDatas[idx];
+        let setter = setterWithData.setters[key];
         if (!setter) {
-            console.error('无法根据varGroup找到对应的数据');
+            console.error('unBindLanguage setter error');
             return;
         }
-        delete setter.setter.components[comp.uuid];
-        if (Object.keys(setter.setter.components).length === 0) {
-            mutilpleDefineProperties.removeValueProps(setterData.parentData, [setterData.parentKey], nodeName, 'cc.Label', setter.uuid);
-            setter.setter.destroy();
-            delete setter['setter'];
-            setterUuids.splice(i, 1);
-            if (setterUuids.length === 0) {
-                setterDatas.splice(idx, 1);
-                delete setterData['parentData'];
+        delete setter.components[comp.uuid];
+        if (Object.keys(setter.components).length === 0) {
+            mutilpleDefineProperties.removeValueProps(data, [key], '', 'cc.LabelLike', setter.uuid);
+            setter.destroy();
+            delete setterWithData.setters[key];
+            if (Object.keys(setterWithData.setters).length === 0) {
+                this.setterWithDatas.splice(idx, 0);
             }
         }
-    }
-
-    private getSetterData(setterDatas: SetterData[], data) {
-        for (let i = 0; i < setterDatas.length; ++i) {
-            if (setterDatas[i].parentData === data) {
-                return { setterData: setterDatas[i], idx: i };
-            }
-        }
-        return {};
-    }
-
-    private getSetterByVarGrounp(setters: SetterUuid[], varGroup: string) {
-        for (let i = 0; i < setters.length; ++i) {
-            let setter = setters[i];
-            if (setter.setter.varGroup === varGroup) {
-                return { setter, i };
-            }
-        }
-        return {};
-    }
-
-    private genSetterKey(nodeName: string) {
-        return nodeName + '##';
     }
 
     bindLanguage(comp: ffb.LabelLike, data: ffb.LanguageObject, key?: string, varGroup?: string) {
@@ -294,27 +273,15 @@ class LangManager {
         data = data ?? this.language;
         key = key || nodeName;
         varGroup = varGroup || '';
-
-        let setterKey = this.genSetterKey(nodeName);
-        let setterDatas = this.setters[setterKey];
-        let setterUuid: SetterUuid = null;
-        if (!setterDatas) {
-            setterUuid = { uuid: comp.node.uuid, setter: null };
-            this.setters[setterKey] = setterDatas = [{ setterUuids: [setterUuid], parentData: data, parentKey: key }];
-        } else {
-            let setterData = this.getSetterData(setterDatas, data).setterData;
-            if (setterData) {
-                setterUuid = this.getSetterByVarGrounp(setterData.setterUuids, varGroup).setter;
-                if (!setterUuid) {
-                    setterUuid = { uuid: comp.node.uuid, setter: null };
-                    setterData.setterUuids.push(setterUuid);
-                }
-            } else {
-                setterUuid = { uuid: comp.node.uuid, setter: null };
-                setterDatas.push({ setterUuids: [setterUuid], parentData: data, parentKey: key });
+        let setterWithData = this.setterWithDatas.find((value) => value.parentData === data);
+        if (!setterWithData) {
+            setterWithData = {
+                parentData: data,
+                setters: {},
             }
+            this.setterWithDatas.push(setterWithData);
         }
-        if (!setterUuid.setter) {
+        if (!setterWithData.setters[key]) {
             let value = data[key];
             if (!isValidValue(value)) {
                 console.error(`没找到与节点${nodeName}对应的数据`);
@@ -322,28 +289,22 @@ class LangManager {
             }
             let setter = new LanguageSetter();
             setter.components[comp.uuid] = comp;
-            setter.nodeName = nodeName;
             setter.varGroup = varGroup;
             setter.set(value);
-            setterUuid.setter = setter;
             let props = {};
             props[key] = {
                 set: setter.set.bind(setter),
                 get: setter.get.bind(setter),
             };
-            mutilpleDefineProperties.addValueProps(data, props, nodeName, 'cc.Label', comp.node.uuid);
+            mutilpleDefineProperties.addValueProps(data, props, '', 'cc.LabelLike', setter.uuid);
+            setterWithData.setters[key] = setter;
         } else {
-            setterUuid.setter.components[comp.uuid] = comp;
-            comp.string = setterUuid.setter.toString();
+            let setter = setterWithData.setters[key];
+            setter.components[comp.uuid] = comp;
+            comp.string = setter.toString();
         }
     }
 
-    // updateLanguage() {
-    //     for (const key in this.setters) {
-    //         const setter = this.setters[key];
-    //         setter.setter.set(setter.parentData[setter.parentKey], true);
-    //     }
-    // }
 }
 
 export default LangManager;
