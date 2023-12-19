@@ -176,7 +176,7 @@ class GameManager {
         return layer;
     }
 
-    private updateStaticBackground() {
+    updateStaticBackground() {
         if (!this.staticBackground) {
             return
         }
@@ -212,6 +212,7 @@ class GameManager {
         for (let i = 0; i < this.layers.length - 1; ++i) {
             let layer = this.layers[i];
             layer.parent = node;
+            layer.opacity = 255;
         }
         camera.render(node);
         for (let i = 0; i < this.layers.length - 1; ++i) {

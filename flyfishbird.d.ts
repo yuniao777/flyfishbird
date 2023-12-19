@@ -4,6 +4,11 @@ namespace ffb {
     interface GameManager {
 
         /**
+         * 是否开启静态背景。如果开启，在显示新Layer时，会将其他页面生成静态背景。
+         */
+        staticBackground: boolean;
+
+        /**
          * 是否正在加载页面
          */
         // loadingLayer: boolean;
@@ -76,6 +81,11 @@ namespace ffb {
          * 销毁所有layer
          */
         destroyAllLayer();
+
+        /**
+         * 刷新静态背景
+         */
+        updateStaticBackground();
     }
 
     type AttrSetFun = (comp: cc.Component, value) => Promise<unknown>;
