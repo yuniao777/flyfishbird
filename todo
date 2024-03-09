@@ -3,3 +3,6 @@
 2、弱网状态下的解决方案
 3、creator 3.x 适配
 4、让UI配置在编辑器中也生效，达到快速打开预制的效果
+5、Scrollview和 TableView 添加Item父类
+6、多个弹窗叠加导致黑色背景叠加，需要隐藏
+7、SpriteAtlas 的解析放到 DataDealer
