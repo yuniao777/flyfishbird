@@ -76,7 +76,7 @@ class DataManager {
         }
         let idx = callbacks.findIndex((v) => v.callback === callback);
         if (idx >= 0) {
-            callbacks.splice(idx);
+            callbacks.splice(idx, 1);
         } else {
             console.error(`delete fail ${nodeName} ${eventType}`);
         }
